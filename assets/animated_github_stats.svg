@@ -1,0 +1,75 @@
+<svg width="850" height="200" viewBox="0 0 850 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      @keyframes pulse_radar {
+        0%, 100% { fill: #00ff66; filter: drop-shadow(0 0 4px #00ff66); }
+        50% { fill: #008833; filter: drop-shadow(0 0 1px #008833); }
+      }
+      @keyframes bar_fill_1 {
+        0%, 100% { width: 190px; }
+        50% { width: 220px; }
+      }
+      @keyframes bar_fill_2 {
+        0%, 100% { width: 170px; }
+        50% { width: 200px; }
+      }
+      .live-dot { animation: pulse_radar 1.5s infinite; }
+      .bar-anim-1 { animation: bar_fill_1 6s ease-in-out infinite; }
+      .bar-anim-2 { animation: bar_fill_2 5s ease-in-out infinite; }
+    </style>
+    <linearGradient id="stats_bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0c0e15"/>
+      <stop offset="100%" stop-color="#050609"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Frame -->
+  <rect x="2" y="2" width="846" height="196" rx="6" fill="url(#stats_bg)" stroke="#222530" stroke-width="1.2"/>
+  
+  <!-- Titlebar -->
+  <rect x="3" y="3" width="844" height="24" rx="5" fill="#141824" stroke="#222736" stroke-width="0.8"/>
+  <text x="16" y="19" font-family="'Consolas', monospace" font-size="11" font-weight="700" fill="#e6edf3" letter-spacing="1.5">📊 TELEMETRY_STATISTICS.SYS // REAL-TIME GIT &amp; SIMULATION VELOCITY</text>
+  <text x="790" y="19" font-family="monospace" font-size="11" fill="#8b949e">[ _ ][ □ ][ X ]</text>
+
+  <!-- LEFT COLUMN: GIT & DEV STATS -->
+  <rect x="18" y="38" width="395" height="146" rx="4" fill="#07090e" stroke="#21262d" stroke-width="1"/>
+  
+  <text x="32" y="60" font-family="'Consolas', monospace" font-size="11" font-weight="700" fill="#ff2a55">⚔️ CODE ENGINE &amp; DEV METRICS</text>
+  
+  <text x="32" y="82" font-family="'Consolas', monospace" font-size="10" fill="#8b949e">TOTAL INDUSTRY EXPERIENCE</text>
+  <text x="360" y="82" text-anchor="end" font-family="'Consolas', monospace" font-size="11" font-weight="700" fill="#ffffff">6+ YEARS</text>
+
+  <text x="32" y="104" font-family="'Consolas', monospace" font-size="10" fill="#8b949e">TEAMS LED / DIRECTED</text>
+  <text x="360" y="104" text-anchor="end" font-family="'Consolas', monospace" font-size="11" font-weight="700" fill="#ffffff">15+ DEV TEAMS</text>
+
+  <text x="32" y="126" font-family="'Consolas', monospace" font-size="10" fill="#8b949e">COMMUNITY NETWORK MANAGED</text>
+  <text x="360" y="126" text-anchor="end" font-family="'Consolas', monospace" font-size="11" font-weight="700" fill="#ffffff">200+ DEVELOPERS</text>
+
+  <text x="32" y="148" font-family="'Consolas', monospace" font-size="10" fill="#8b949e">AUTOMATED TEST SUITE</text>
+  <text x="360" y="148" text-anchor="end" font-family="'Consolas', monospace" font-size="11" font-weight="700" fill="#00ff66">373 / 373 PASSING [100%]</text>
+
+  <text x="32" y="170" font-family="'Consolas', monospace" font-size="10" fill="#8b949e">STEAM DEPLOYMENT</text>
+  <text x="360" y="170" text-anchor="end" font-family="'Consolas', monospace" font-size="11" font-weight="700" fill="#ff4770">TATER UP (PUBLISHED)</text>
+
+  <!-- RIGHT COLUMN: SIMULATION & NETWORK TELEMETRY -->
+  <rect x="435" y="38" width="395" height="146" rx="4" fill="#07090e" stroke="#21262d" stroke-width="1"/>
+  
+  <text x="450" y="60" font-family="'Consolas', monospace" font-size="11" font-weight="700" fill="#ff2a55">🌐 REAL-TIME NETWORK &amp; SIM VELOCITY</text>
+
+  <text x="450" y="82" font-family="'Consolas', monospace" font-size="10" fill="#8b949e">NETWORK SYNC LATENCY</text>
+  <text x="780" y="82" text-anchor="end" font-family="'Consolas', monospace" font-size="11" font-weight="700" fill="#00ff66">&lt;6ms [ZERO DESYNC]</text>
+
+  <text x="450" y="104" font-family="'Consolas', monospace" font-size="10" fill="#8b949e">SIMULATION TICK FREQUENCY</text>
+  <text x="780" y="104" text-anchor="end" font-family="'Consolas', monospace" font-size="11" font-weight="700" fill="#ffffff">20Hz DETERMINISTIC</text>
+
+  <text x="450" y="126" font-family="'Consolas', monospace" font-size="10" fill="#8b949e">RUNTIME GC OPTIMIZATION</text>
+  <text x="780" y="126" text-anchor="end" font-family="'Consolas', monospace" font-size="11" font-weight="700" fill="#ffffff">~35% RUNTIME BOOST</text>
+
+  <text x="450" y="148" font-family="'Consolas', monospace" font-size="10" fill="#8b949e">AI VOICE LATENCY (CLINITOPYA)</text>
+  <text x="780" y="148" text-anchor="end" font-family="'Consolas', monospace" font-size="11" font-weight="700" fill="#ff4770">&lt;6s END-TO-END</text>
+
+  <!-- Live Status Bar -->
+  <rect x="450" y="158" width="365" height="18" rx="3" fill="#121622"/>
+  <circle cx="462" cy="167" r="4" class="live-dot"/>
+  <text x="474" y="171" font-family="'Consolas', monospace" font-size="10" font-weight="700" fill="#e6edf3">STATUS: OPERATIONAL // ALL SYSTEMS VERIFIED</text>
+</svg>

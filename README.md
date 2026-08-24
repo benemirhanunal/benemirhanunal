@@ -177,8 +177,9 @@ system_status:
 
 <br>
 
+<!-- SELF-HOSTED ANIMATED TELEMETRY & STATS CARD -->
 <div align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=benemirhanunal&show_icons=true&theme=dark&hide_border=true&bg_color=000000&text_color=ffffff&icon_color=ff0033" alt="Emirhan's GitHub Stats"/>
+  <img src="assets/animated_github_stats.svg" alt="Real-Time Telemetry & Statistics" width="100%">
 </div>
 
 ---
