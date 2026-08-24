@@ -1,0 +1,110 @@
+<svg width="850" height="180" viewBox="0 0 850 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      @keyframes laser_pulse {
+        0% { stroke-dashoffset: 850; }
+        100% { stroke-dashoffset: -850; }
+      }
+      @keyframes gate_glow {
+        0%, 100% { stroke: #ff003c; filter: drop-shadow(0 0 3px #ff003c); }
+        50% { stroke: #ff2a55; filter: drop-shadow(0 0 10px #ff2a55); }
+      }
+      @keyframes float_up {
+        0% { transform: translateY(0) scale(1); opacity: 0.8; }
+        100% { transform: translateY(-40px) scale(0.3); opacity: 0; }
+      }
+      .laser-line { stroke-dasharray: 80, 200; animation: laser_pulse 4s linear infinite; }
+      .gate-shape { animation: gate_glow 3s ease-in-out infinite; }
+      .p1 { animation: float_up 2.5s infinite linear; }
+      .p2 { animation: float_up 3.2s infinite linear 0.7s; }
+      .p3 { animation: float_up 2.8s infinite linear 1.4s; }
+    </style>
+    <linearGradient id="torii_bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0e1017"/>
+      <stop offset="100%" stop-color="#05060a"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect x="2" y="2" width="846" height="176" rx="6" fill="url(#torii_bg)" stroke="#222530" stroke-width="1.2"/>
+  
+  <!-- Title -->
+  <text x="425" y="24" text-anchor="middle" font-family="'Consolas', monospace" font-size="12" font-weight="700" fill="#ffffff" letter-spacing="3">⛩️ THE 5 TORII GATES OF THE CYBER SHOGUNATE ⛩️</text>
+
+  <!-- Connecting Highway Line -->
+  <line x1="50" y1="100" x2="800" y2="100" stroke="#1f2430" stroke-width="3"/>
+  <line x1="50" y1="100" x2="800" y2="100" stroke="#ff003c" stroke-width="3" class="laser-line"/>
+
+  <!-- GATE 1: GENESIS -->
+  <g transform="translate(70, 45)">
+    <!-- Torii Gate Vector -->
+    <path d="M 0 15 Q 25 5 50 15 L 45 20 Q 25 12 5 20 Z" fill="#ff003c" class="gate-shape"/>
+    <line x1="6" y1="20" x2="44" y2="20" stroke="#ff003c" stroke-width="2"/>
+    <line x1="12" y1="20" x2="12" y2="65" stroke="#ff003c" stroke-width="2.5"/>
+    <line x1="38" y1="20" x2="38" y2="65" stroke="#ff003c" stroke-width="2.5"/>
+    <circle cx="25" cy="55" r="4" fill="#ffffff" stroke="#ff003c" stroke-width="1.5"/>
+    <!-- Labels -->
+    <text x="25" y="80" text-anchor="middle" font-family="'Consolas', monospace" font-size="10" font-weight="700" fill="#ff4770">⛩️ GATE I</text>
+    <text x="25" y="93" text-anchor="middle" font-family="'Consolas', monospace" font-size="9" fill="#ffffff">覚醒 • GENESIS</text>
+    <text x="25" y="105" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-size="8" fill="#8b949e">B.Sc. @ ESOGÜ</text>
+    <text x="25" y="116" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-size="8" fill="#8b949e">200+ Dev Network</text>
+  </g>
+
+  <!-- GATE 2: THE DOJO -->
+  <g transform="translate(235, 45)">
+    <path d="M 0 15 Q 25 5 50 15 L 45 20 Q 25 12 5 20 Z" fill="#ff003c" class="gate-shape"/>
+    <line x1="6" y1="20" x2="44" y2="20" stroke="#ff003c" stroke-width="2"/>
+    <line x1="12" y1="20" x2="12" y2="65" stroke="#ff003c" stroke-width="2.5"/>
+    <line x1="38" y1="20" x2="38" y2="65" stroke="#ff003c" stroke-width="2.5"/>
+    <circle cx="25" cy="55" r="4" fill="#ffffff" stroke="#ff003c" stroke-width="1.5"/>
+    <text x="25" y="80" text-anchor="middle" font-family="'Consolas', monospace" font-size="10" font-weight="700" fill="#ff4770">⛩️ GATE II</text>
+    <text x="25" y="93" text-anchor="middle" font-family="'Consolas', monospace" font-size="9" fill="#ffffff">道場 • DOJO</text>
+    <text x="25" y="105" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-size="8" fill="#8b949e">100+ Students</text>
+    <text x="25" y="116" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-size="8" fill="#8b949e">GameDev Initiative</text>
+  </g>
+
+  <!-- GATE 3: SIMULATION -->
+  <g transform="translate(400, 45)">
+    <path d="M 0 15 Q 25 5 50 15 L 45 20 Q 25 12 5 20 Z" fill="#ff003c" class="gate-shape"/>
+    <line x1="6" y1="20" x2="44" y2="20" stroke="#ff003c" stroke-width="2"/>
+    <line x1="12" y1="20" x2="12" y2="65" stroke="#ff003c" stroke-width="2.5"/>
+    <line x1="38" y1="20" x2="38" y2="65" stroke="#ff003c" stroke-width="2.5"/>
+    <circle cx="25" cy="55" r="4" fill="#ffffff" stroke="#ff003c" stroke-width="1.5"/>
+    <text x="25" y="80" text-anchor="middle" font-family="'Consolas', monospace" font-size="10" font-weight="700" fill="#ff4770">⛩️ GATE III</text>
+    <text x="25" y="93" text-anchor="middle" font-family="'Consolas', monospace" font-size="9" fill="#ffffff">電脳 • SIMULATION</text>
+    <text x="25" y="105" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-size="8" fill="#8b949e">TÜSEB Healthcare VR</text>
+    <text x="25" y="116" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-size="8" fill="#8b949e">~35% Unity Boost</text>
+  </g>
+
+  <!-- GATE 4: CLOUD TPS -->
+  <g transform="translate(565, 45)">
+    <path d="M 0 15 Q 25 5 50 15 L 45 20 Q 25 12 5 20 Z" fill="#ff003c" class="gate-shape"/>
+    <line x1="6" y1="20" x2="44" y2="20" stroke="#ff003c" stroke-width="2"/>
+    <line x1="12" y1="20" x2="12" y2="65" stroke="#ff003c" stroke-width="2.5"/>
+    <line x1="38" y1="20" x2="38" y2="65" stroke="#ff003c" stroke-width="2.5"/>
+    <circle cx="25" cy="55" r="4" fill="#ffffff" stroke="#ff003c" stroke-width="1.5"/>
+    <text x="25" y="80" text-anchor="middle" font-family="'Consolas', monospace" font-size="10" font-weight="700" fill="#ff4770">⛩️ GATE IV</text>
+    <text x="25" y="93" text-anchor="middle" font-family="'Consolas', monospace" font-size="9" fill="#ffffff">合戦 • CLOUD TPS</text>
+    <text x="25" y="105" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-size="8" fill="#8b949e">Negentra Games</text>
+    <text x="25" y="116" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-size="8" fill="#8b949e">AWS &amp; Photon Fusion</text>
+  </g>
+
+  <!-- GATE 5: MASTERWORK TRIAD -->
+  <g transform="translate(730, 45)">
+    <path d="M 0 15 Q 25 5 50 15 L 45 20 Q 25 12 5 20 Z" fill="#ff003c" class="gate-shape"/>
+    <line x1="6" y1="20" x2="44" y2="20" stroke="#ff003c" stroke-width="2"/>
+    <line x1="12" y1="20" x2="12" y2="65" stroke="#ff003c" stroke-width="2.5"/>
+    <line x1="38" y1="20" x2="38" y2="65" stroke="#ff003c" stroke-width="2.5"/>
+    <circle cx="25" cy="55" r="5" fill="#00ff66" stroke="#ffffff" stroke-width="1.5"/>
+    <text x="25" y="80" text-anchor="middle" font-family="'Consolas', monospace" font-size="10" font-weight="700" fill="#00ff66">⛩️ GATE V</text>
+    <text x="25" y="93" text-anchor="middle" font-family="'Consolas', monospace" font-size="9" fill="#ffffff">到達 • MASTERWORK</text>
+    <text x="25" y="105" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-size="8" fill="#8b949e">Unity 6 Triad (VR/20Hz)</text>
+    <text x="25" y="116" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-size="8" fill="#8b949e">Steam: TaterUp</text>
+  </g>
+
+  <!-- Floating Embers / Particles -->
+  <circle cx="150" cy="110" r="1.5" fill="#ff2a55" class="p1"/>
+  <circle cx="320" cy="95" r="2" fill="#ff003c" class="p2"/>
+  <circle cx="510" cy="120" r="1.5" fill="#ff4770" class="p3"/>
+  <circle cx="680" cy="105" r="2" fill="#ff003c" class="p1"/>
+</svg>

@@ -1,47 +1,11 @@
 <div align="center">
 
-```text
-  ╔═════════════════════════════════════════════════════════════════════════════════════╗
-  ║  SYS.ARCHITECT // EMIRHAN_ÜNAL.EXE               [ 鬼: CYBER-MITOS ] [ _ ][ □ ][ X ] ║
-  ╠═════════════════════════════════════════════════════════════════════════════════════╣
-  ║                                                                                     ║
-  ║                             |  \           /  |                                     ║
-  ║                             |   \         /   |                                     ║
-  ║                             |    \_______/    |                                     ║
-  ║                            /   __         __   \                                    ║
-  ║                           /   /  \       /  \   \                                   ║
-  ║                          |   | (•) |   | (•) |   |                                  ║
-  ║                          |    \___/     \___/    |                                  ║
-  ║                          |         /\_/\         |                                  ║
-  ║                          |        |     |        |                                  ║
-  ║                          |        \_____/        |                                  ║
-  ║                          /   /\             /\   \                                  ║
-  ║                         /   /  \___________/  \   \                                 ║
-  ║                        |   /  | [▼] [▼] [▼] |  \   |                                ║
-  ║                        |  |   |_____________|   |  |                                ║
-  ║                         \  \  /   =======   \  /  /                                 ║
-  ║                          \  `'---------------'`  /                                  ║
-  ║                           `-._________________.-'                                   ║
-  ║                                /     |     \                                        ║
-  ║                               |  /   |   \  |                                       ║
-  ║                               |/     |     \|                                       ║
-  ║                                                                                     ║
-  ║       ███████╗███╗   ███╗██╗██████╗ ██╗  ██╗ █████╗ ███╗   ██╗    ██╗   ██╗         ║
-  ║       ██╔════╝████╗ ████║██║██╔══██╗██║  ██║██╔══██╗████╗  ██║    ██║   ██║         ║
-  ║       █████╗  ██╔████╔██║██║██████╔╝███████║███████║██╔██╗ ██║    ██║   ██║         ║
-  ║       ██╔══╝  ██║╚██╔╝██║██║██╔══██╗██╔══██║██╔══██║██║╚██╗██║    ██║   ██║         ║
-  ║       ███████╗██║ ╚═╝ ██║██║██║  ██║██║  ██║██║  ██║██║ ╚████║    ╚██████╔╝         ║
-  ║       ╚══════╝╚═╝     ╚═╝╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝     ╚═════╝          ║
-  ║                                                                                     ║
-  ║                >> ARCHITECT OF COMPLEX, REAL-TIME MULTIPLAYER WORLDS <<             ║
-  ║                                                                                     ║
-  ║             [ B.Sc. COMPUTER ENGINEERING @ ESOGÜ // ISTANBUL & ESKİŞEHİR ]          ║
-  ║                                                                                     ║
-  ╠═════════════════════════════════════════════════════════════════════════════════════╣
-  ║  MEM_USAGE: 64MB // TICK_RATE: 20Hz LOCKSTEP // NET_LATENCY: <6ms // STATUS: ONLINE ║
-  ╚═════════════════════════════════════════════════════════════════════════════════════╝
-```
+<!-- ANIMATED CYBER-ONI HERO BANNER -->
+<img src="assets/animated_oni_banner.svg" alt="Emirhan Ünal - Game Dev Shogun" width="100%">
 
+<br><br>
+
+<!-- QUICK STATUS DISPATCH BADGES -->
 <p align="center">
   <a href="https://www.linkedin.com/in/benemirhanunal/"><img src="https://img.shields.io/badge/LINKEDIN-000000?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"/></a>
   <a href="https://store.steampowered.com/app/3989920/TaterUp/"><img src="https://img.shields.io/badge/STEAM_RELEASE-000000?style=for-the-badge&logo=steam&logoColor=white" alt="Steam"/></a>
@@ -134,16 +98,18 @@ system_status:
 
 ### `03 // CORE DOMAINS & BLUEPRINTS`
 
+<!-- ANIMATED ARCHITECTURAL RADAR & BLUEPRINT VISUALIZER -->
+<div align="center">
+  <img src="assets/animated_project_radar.svg" alt="Animated Project Blueprints" width="100%">
+</div>
+
+<br>
+
 ```text
 ╔═[ 🦊 BLUEPRINT 01: CLINITOPYA — GENERATIVE AI VR CLINICAL SIMULATION ]═══════[ _ ][ X ]═╗
 ║                                                                                       ║
 ║   PLATFORM : Unity 6 • Meta Quest 3 VR          ROLE : Lead Developer                 ║
 ║   STACK    : Gemini STT/LLM • ElevenLabs TTS • Reallusion CC5 • ScriptableObjects     ║
-║                                                                                       ║
-║   ┌─── [ NEURAL PIPELINE ARCHITECTURE ] ──────────────────────────────────────────┐   ║
-║   │ [Player Voice] ──> Gemini STT ──> Gemini LLM ──> ElevenLabs TTS ──> CC5 Avatar │   ║
-║   │                          └───────── <6s Total Latency ────────┘               │   ║
-║   └───────────────────────────────────────────────────────────────────────────────┘   ║
 ║                                                                                       ║
 ║   • Procedural avatar lip-sync mapped dynamically via ElevenLabs viseme data.         ║
 ║   • Modular ScriptableObject AI persona engine supporting dynamic psychological scenarios.║
@@ -165,11 +131,6 @@ system_status:
 ║                                                                                       ║
 ║   PLATFORM : Unity 6 & C#                       ROLE : Lead Systems Architect         ║
 ║   STACK    : Deterministic 20Hz Tick Engine • Golden Checksums • 373 Automated Tests  ║
-║                                                                                       ║
-║   ┌─── [ DETERMINISTIC ENGINE LOOP ] ─────────────────────────────────────────────┐   ║
-║   │ [3-Choice Draft] ──> [20Hz Combat Tick] ──> [State Checksum] ──> [3D View]   │   ║
-║   │ (Strict Domain Authority decoupled completely from Presentation Layer)        │   ║
-║   └───────────────────────────────────────────────────────────────────────────────┘   ║
 ║                                                                                       ║
 ║   • Full deterministic combat engine: targeting, casts, status effects & death queue.  ║
 ║   • Strategic 3-option draft match loop with Tactical Credit rerolls & comeback logic.║
@@ -202,25 +163,22 @@ system_status:
 
 ### `04 // DIGITAL LEGACY & TELEMETRY`
 
-```text
-╔═[ ♫ NOW PLAYING: SAMURAI — NEVER FADE AWAY ]═════════════════════════════════[ _ ][ X ]═╗
-║  ► [ 02:47 / 03:10 ]  | ılı.lıllılı.ıllı |  VOL: ▰▰▰▰▰▰▰▰▱▱ 80%  |  BITRATE: 320kbps      ║
-╚═════════════════════════════════════════════════════════════════════════════════════════╝
+<!-- ANIMATED RETRO WINAMP AUDIO PLAYER -->
+<div align="center">
+  <img src="assets/animated_audio_player.svg" alt="Animated Winamp Media Player" width="100%">
+</div>
 
-               ⛩️ THE 5 TORII GATES OF THE CYBER SHOGUNATE ⛩️
+<br>
 
-    ⛩️ GATE I           ⛩️ GATE II          ⛩️ GATE III         ⛩️ GATE IV          ⛩️ GATE V
-    [ 覚醒 ]             [ 道場 ]             [ 電脳 ]             [ 合戦 ]             [ 到達 ]
-  ══════════════      ══════════════      ══════════════      ══════════════      ══════════════
-  GENESIS & B.Sc      DOJO & MENTOR       DIGITAL TWINS       CLOUD TPS NET       MASTERWORKS
-  ESOGÜ Comp Eng      100+ Students       TÜSEB Healthcare    Negentra Games      Clinitopya VR
-  200+ Dev Community  GameDev Initiative  35% Boost (Unity)   AWS / Photon        DraftinRift 20Hz
-```
+<!-- ANIMATED 5-TORII GATE TIMELINE -->
+<div align="center">
+  <img src="assets/animated_torii_timeline.svg" alt="Animated 5 Torii Gates Career Journey" width="100%">
+</div>
+
+<br>
 
 <div align="center">
-
-<img src="https://github-readme-stats.vercel.app/api?username=benemirhanunal&show_icons=true&theme=dark&hide_border=true&bg_color=000000&text_color=ffffff&icon_color=ff0033" alt="Emirhan's GitHub Stats"/>
-
+  <img src="https://github-readme-stats.vercel.app/api?username=benemirhanunal&show_icons=true&theme=dark&hide_border=true&bg_color=000000&text_color=ffffff&icon_color=ff0033" alt="Emirhan's GitHub Stats"/>
 </div>
 
 ---

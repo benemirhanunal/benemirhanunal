@@ -1,0 +1,210 @@
+<svg width="850" height="120" viewBox="0 0 850 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      
+      @keyframes eq_bar_0 {
+        0%, 100% { height: 4px; y: 38px; }
+        50% { height: 24px; y: 18px; fill: #ff2a55; }
+      }
+      .eq-bar-0 { animation: eq_bar_0 0.60s ease-in-out 0.00s infinite; }
+    
+      @keyframes eq_bar_1 {
+        0%, 100% { height: 4px; y: 38px; }
+        50% { height: 30px; y: 12px; fill: #ff2a55; }
+      }
+      .eq-bar-1 { animation: eq_bar_1 0.72s ease-in-out 0.08s infinite; }
+    
+      @keyframes eq_bar_2 {
+        0%, 100% { height: 4px; y: 38px; }
+        50% { height: 36px; y: 6px; fill: #ff2a55; }
+      }
+      .eq-bar-2 { animation: eq_bar_2 0.84s ease-in-out 0.16s infinite; }
+    
+      @keyframes eq_bar_3 {
+        0%, 100% { height: 4px; y: 38px; }
+        50% { height: 42px; y: 0px; fill: #ff2a55; }
+      }
+      .eq-bar-3 { animation: eq_bar_3 0.96s ease-in-out 0.24s infinite; }
+    
+      @keyframes eq_bar_4 {
+        0%, 100% { height: 4px; y: 38px; }
+        50% { height: 48px; y: -6px; fill: #ff2a55; }
+      }
+      .eq-bar-4 { animation: eq_bar_4 1.08s ease-in-out 0.32s infinite; }
+    
+      @keyframes eq_bar_5 {
+        0%, 100% { height: 4px; y: 38px; }
+        50% { height: 24px; y: 18px; fill: #ff2a55; }
+      }
+      .eq-bar-5 { animation: eq_bar_5 1.20s ease-in-out 0.40s infinite; }
+    
+      @keyframes eq_bar_6 {
+        0%, 100% { height: 4px; y: 38px; }
+        50% { height: 30px; y: 12px; fill: #ff2a55; }
+      }
+      .eq-bar-6 { animation: eq_bar_6 1.32s ease-in-out 0.48s infinite; }
+    
+      @keyframes eq_bar_7 {
+        0%, 100% { height: 4px; y: 38px; }
+        50% { height: 36px; y: 6px; fill: #ff2a55; }
+      }
+      .eq-bar-7 { animation: eq_bar_7 0.60s ease-in-out 0.06s infinite; }
+    
+      @keyframes eq_bar_8 {
+        0%, 100% { height: 4px; y: 38px; }
+        50% { height: 42px; y: 0px; fill: #ff2a55; }
+      }
+      .eq-bar-8 { animation: eq_bar_8 0.72s ease-in-out 0.14s infinite; }
+    
+      @keyframes eq_bar_9 {
+        0%, 100% { height: 4px; y: 38px; }
+        50% { height: 48px; y: -6px; fill: #ff2a55; }
+      }
+      .eq-bar-9 { animation: eq_bar_9 0.84s ease-in-out 0.22s infinite; }
+    
+      @keyframes eq_bar_10 {
+        0%, 100% { height: 4px; y: 38px; }
+        50% { height: 24px; y: 18px; fill: #ff2a55; }
+      }
+      .eq-bar-10 { animation: eq_bar_10 0.96s ease-in-out 0.30s infinite; }
+    
+      @keyframes eq_bar_11 {
+        0%, 100% { height: 4px; y: 38px; }
+        50% { height: 30px; y: 12px; fill: #ff2a55; }
+      }
+      .eq-bar-11 { animation: eq_bar_11 1.08s ease-in-out 0.38s infinite; }
+    
+      @keyframes eq_bar_12 {
+        0%, 100% { height: 4px; y: 38px; }
+        50% { height: 36px; y: 6px; fill: #ff2a55; }
+      }
+      .eq-bar-12 { animation: eq_bar_12 1.20s ease-in-out 0.46s infinite; }
+    
+      @keyframes eq_bar_13 {
+        0%, 100% { height: 4px; y: 38px; }
+        50% { height: 42px; y: 0px; fill: #ff2a55; }
+      }
+      .eq-bar-13 { animation: eq_bar_13 1.32s ease-in-out 0.04s infinite; }
+    
+      @keyframes eq_bar_14 {
+        0%, 100% { height: 4px; y: 38px; }
+        50% { height: 48px; y: -6px; fill: #ff2a55; }
+      }
+      .eq-bar-14 { animation: eq_bar_14 0.60s ease-in-out 0.12s infinite; }
+    
+      @keyframes eq_bar_15 {
+        0%, 100% { height: 4px; y: 38px; }
+        50% { height: 24px; y: 18px; fill: #ff2a55; }
+      }
+      .eq-bar-15 { animation: eq_bar_15 0.72s ease-in-out 0.20s infinite; }
+    
+      @keyframes eq_bar_16 {
+        0%, 100% { height: 4px; y: 38px; }
+        50% { height: 30px; y: 12px; fill: #ff2a55; }
+      }
+      .eq-bar-16 { animation: eq_bar_16 0.84s ease-in-out 0.28s infinite; }
+    
+      @keyframes eq_bar_17 {
+        0%, 100% { height: 4px; y: 38px; }
+        50% { height: 36px; y: 6px; fill: #ff2a55; }
+      }
+      .eq-bar-17 { animation: eq_bar_17 0.96s ease-in-out 0.36s infinite; }
+    
+      @keyframes eq_bar_18 {
+        0%, 100% { height: 4px; y: 38px; }
+        50% { height: 42px; y: 0px; fill: #ff2a55; }
+      }
+      .eq-bar-18 { animation: eq_bar_18 1.08s ease-in-out 0.44s infinite; }
+    
+      @keyframes eq_bar_19 {
+        0%, 100% { height: 4px; y: 38px; }
+        50% { height: 48px; y: -6px; fill: #ff2a55; }
+      }
+      .eq-bar-19 { animation: eq_bar_19 1.20s ease-in-out 0.02s infinite; }
+    
+      @keyframes eq_bar_20 {
+        0%, 100% { height: 4px; y: 38px; }
+        50% { height: 24px; y: 18px; fill: #ff2a55; }
+      }
+      .eq-bar-20 { animation: eq_bar_20 1.32s ease-in-out 0.10s infinite; }
+    
+      @keyframes eq_bar_21 {
+        0%, 100% { height: 4px; y: 38px; }
+        50% { height: 30px; y: 12px; fill: #ff2a55; }
+      }
+      .eq-bar-21 { animation: eq_bar_21 0.60s ease-in-out 0.18s infinite; }
+    
+      @keyframes eq_bar_22 {
+        0%, 100% { height: 4px; y: 38px; }
+        50% { height: 36px; y: 6px; fill: #ff2a55; }
+      }
+      .eq-bar-22 { animation: eq_bar_22 0.72s ease-in-out 0.26s infinite; }
+    
+      @keyframes eq_bar_23 {
+        0%, 100% { height: 4px; y: 38px; }
+        50% { height: 42px; y: 0px; fill: #ff2a55; }
+      }
+      .eq-bar-23 { animation: eq_bar_23 0.84s ease-in-out 0.34s infinite; }
+    
+      @keyframes marquee {
+        0% { transform: translateX(500px); }
+        100% { transform: translateX(-800px); }
+      }
+      @keyframes progress_pulse {
+        0% { width: 280px; }
+        50% { width: 330px; }
+        100% { width: 280px; }
+      }
+      .marquee-text { animation: marquee 18s linear infinite; }
+      .progress-bar { animation: progress_pulse 8s ease-in-out infinite; }
+    </style>
+    <linearGradient id="player_bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10131c"/>
+      <stop offset="100%" stop-color="#06080c"/>
+    </linearGradient>
+    <clipPath id="marquee_clip">
+      <rect x="290" y="24" width="430" height="24"/>
+    </clipPath>
+  </defs>
+
+  <!-- Player Frame -->
+  <rect x="2" y="2" width="846" height="116" rx="6" fill="url(#player_bg)" stroke="#2d3345" stroke-width="1.2"/>
+  
+  <!-- Titlebar -->
+  <rect x="3" y="3" width="844" height="20" rx="4" fill="#181c26"/>
+  <text x="16" y="16" font-family="'Consolas', monospace" font-size="10" font-weight="700" fill="#ff003c" letter-spacing="1">♫ RETRO_MEDIA_PLAYER.EXE // WINAMP 1-BIT DECK</text>
+  <text x="800" y="16" font-family="monospace" font-size="10" fill="#8b949e">[ _ ][ X ]</text>
+
+  <!-- Left Side: Animated Equalizer Screen -->
+  <rect x="18" y="28" width="240" height="52" rx="4" fill="#06080d" stroke="#ff003c" stroke-width="0.8"/>
+  <g>
+    <rect x="42" y="38" width="6" height="4" rx="1" fill="#ff003c" class="eq-bar-0"/><rect x="51" y="38" width="6" height="4" rx="1" fill="#ff003c" class="eq-bar-1"/><rect x="60" y="38" width="6" height="4" rx="1" fill="#ff003c" class="eq-bar-2"/><rect x="69" y="38" width="6" height="4" rx="1" fill="#ff003c" class="eq-bar-3"/><rect x="78" y="38" width="6" height="4" rx="1" fill="#ff003c" class="eq-bar-4"/><rect x="87" y="38" width="6" height="4" rx="1" fill="#ff003c" class="eq-bar-5"/><rect x="96" y="38" width="6" height="4" rx="1" fill="#ff003c" class="eq-bar-6"/><rect x="105" y="38" width="6" height="4" rx="1" fill="#ff003c" class="eq-bar-7"/><rect x="114" y="38" width="6" height="4" rx="1" fill="#ff003c" class="eq-bar-8"/><rect x="123" y="38" width="6" height="4" rx="1" fill="#ff003c" class="eq-bar-9"/><rect x="132" y="38" width="6" height="4" rx="1" fill="#ff003c" class="eq-bar-10"/><rect x="141" y="38" width="6" height="4" rx="1" fill="#ff003c" class="eq-bar-11"/><rect x="150" y="38" width="6" height="4" rx="1" fill="#ff003c" class="eq-bar-12"/><rect x="159" y="38" width="6" height="4" rx="1" fill="#ff003c" class="eq-bar-13"/><rect x="168" y="38" width="6" height="4" rx="1" fill="#ff003c" class="eq-bar-14"/><rect x="177" y="38" width="6" height="4" rx="1" fill="#ff003c" class="eq-bar-15"/><rect x="186" y="38" width="6" height="4" rx="1" fill="#ff003c" class="eq-bar-16"/><rect x="195" y="38" width="6" height="4" rx="1" fill="#ff003c" class="eq-bar-17"/><rect x="204" y="38" width="6" height="4" rx="1" fill="#ff003c" class="eq-bar-18"/><rect x="213" y="38" width="6" height="4" rx="1" fill="#ff003c" class="eq-bar-19"/><rect x="222" y="38" width="6" height="4" rx="1" fill="#ff003c" class="eq-bar-20"/><rect x="231" y="38" width="6" height="4" rx="1" fill="#ff003c" class="eq-bar-21"/><rect x="240" y="38" width="6" height="4" rx="1" fill="#ff003c" class="eq-bar-22"/><rect x="249" y="38" width="6" height="4" rx="1" fill="#ff003c" class="eq-bar-23"/>
+  </g>
+
+  <!-- Middle: Track Info & Scrolling Marquee Display -->
+  <rect x="275" y="28" width="460" height="52" rx="4" fill="#06080d" stroke="#21262d" stroke-width="0.8"/>
+  <g clip-path="url(#marquee_clip)">
+    <text x="0" y="44" font-family="'Consolas', monospace" font-size="13" font-weight="700" fill="#ffffff" letter-spacing="2" class="marquee-text">
+      ♫ NOW PLAYING: SAMURAI — NEVER FADE AWAY (CYBERPUNK 2077)  ✦  OPERATOR: EMIRHAN ÜNAL  ✦  6+ YEARS XP  ✦  15+ TEAMS LED  ✦  373 TESTS PASSING  ✦  20Hz DETERMINISTIC
+    </text>
+  </g>
+
+  <!-- Progress Bar Line -->
+  <rect x="290" y="58" width="430" height="6" rx="3" fill="#161b22"/>
+  <rect x="290" y="58" width="310" height="6" rx="3" fill="#ff003c" class="progress-bar"/>
+
+  <!-- Right Side: Volume & Bitrate Panel -->
+  <rect x="750" y="28" width="85" height="52" rx="4" fill="#06080d" stroke="#21262d" stroke-width="0.8"/>
+  <text x="760" y="45" font-family="'Consolas', monospace" font-size="9" fill="#8b949e">VOL: 85%</text>
+  <text x="760" y="60" font-family="'Consolas', monospace" font-size="9" fill="#00ff66">320 KBPS</text>
+  <text x="760" y="73" font-family="'Consolas', monospace" font-size="9" fill="#ff2a55">STEREO</text>
+
+  <!-- Bottom Transport Controls -->
+  <rect x="18" y="88" width="817" height="22" rx="3" fill="#0a0d14"/>
+  <text x="30" y="103" font-family="'Consolas', monospace" font-size="10" fill="#c9d1d9">► [PLAYING]</text>
+  <text x="120" y="103" font-family="'Consolas', monospace" font-size="10" fill="#8b949e">❚❚ [PAUSE]</text>
+  <text x="200" y="103" font-family="'Consolas', monospace" font-size="10" fill="#8b949e">◼ [STOP]</text>
+  <text x="280" y="103" font-family="'Consolas', monospace" font-size="10" fill="#8b949e">⏮ [PREV]</text>
+  <text x="350" y="103" font-family="'Consolas', monospace" font-size="10" fill="#8b949e">⏭ [NEXT]</text>
+  <text x="680" y="103" font-family="'Consolas', monospace" font-size="10" fill="#ff4770">TIME: 02:47 / 03:10</text>
+</svg>

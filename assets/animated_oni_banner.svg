@@ -1,0 +1,142 @@
+<svg width="850" height="360" viewBox="0 0 850 360" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      @keyframes scanline {
+        0% { transform: translateY(0px); opacity: 0.15; }
+        50% { opacity: 0.28; }
+        100% { transform: translateY(360px); opacity: 0.15; }
+      }
+      @keyframes glitch {
+        0%, 100% { transform: translate(0, 0); opacity: 1; }
+        92% { transform: translate(0, 0); opacity: 1; }
+        93% { transform: translate(-3px, 1px); opacity: 0.8; }
+        94% { transform: translate(3px, -1px); opacity: 0.9; }
+        95% { transform: translate(0, 0); opacity: 1; }
+        98% { transform: translate(2px, 1px); opacity: 0.85; }
+      }
+      @keyframes eye_pulse {
+        0%, 100% { fill: #ff003c; filter: drop-shadow(0 0 6px #ff003c); opacity: 1; }
+        50% { fill: #ff4770; filter: drop-shadow(0 0 14px #ff2a55); opacity: 0.85; }
+      }
+      @keyframes horn_glow {
+        0%, 100% { stroke: #ff003c; filter: drop-shadow(0 0 4px #ff003c); }
+        50% { stroke: #ffffff; filter: drop-shadow(0 0 10px #ff2a55); }
+      }
+      @keyframes blink {
+        0%, 49% { opacity: 1; }
+        50%, 100% { opacity: 0; }
+      }
+      @keyframes pulse_led {
+        0%, 100% { fill: #00ff66; filter: drop-shadow(0 0 4px #00ff66); }
+        50% { fill: #008833; filter: drop-shadow(0 0 1px #008833); }
+      }
+      @keyframes data_stream {
+        0% { stroke-dashoffset: 200; }
+        100% { stroke-dashoffset: 0; }
+      }
+      .glitch-target { animation: glitch 4s infinite; }
+      .eye-target { animation: eye_pulse 2.5s infinite ease-in-out; }
+      .horn-target { animation: horn_glow 3s infinite ease-in-out; }
+      .cursor-blink { animation: blink 1s infinite; }
+      .led-blink { animation: pulse_led 1.8s infinite; }
+      .stream-line { stroke-dasharray: 10, 15; animation: data_stream 3s linear infinite; }
+    </style>
+
+    <linearGradient id="win_bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0d0f17"/>
+      <stop offset="100%" stop-color="#050608"/>
+    </linearGradient>
+    <linearGradient id="bar_grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#181c26"/>
+      <stop offset="50%" stop-color="#1f2433"/>
+      <stop offset="100%" stop-color="#181c26"/>
+    </linearGradient>
+    <linearGradient id="text_red_grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="60%" stop-color="#ff2a55"/>
+      <stop offset="100%" stop-color="#ff003c"/>
+    </linearGradient>
+    <pattern id="crt_grid" width="6" height="6" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="6" x2="6" y2="6" stroke="#161a24" stroke-width="0.75" />
+    </pattern>
+  </defs>
+
+  <!-- Window Frame -->
+  <rect x="2" y="2" width="846" height="356" rx="6" fill="url(#win_bg)" stroke="#ff003c" stroke-width="1.2"/>
+  
+  <!-- CRT Grid Overlay -->
+  <rect x="3" y="3" width="844" height="354" fill="url(#crt_grid)" opacity="0.6"/>
+
+  <!-- Title Bar -->
+  <rect x="3" y="3" width="844" height="32" rx="5" fill="url(#bar_grad)" stroke="#2d3345" stroke-width="0.8"/>
+  <rect x="14" y="11" width="10" height="10" rx="2" fill="#ff003c"/>
+  <text x="32" y="23" font-family="'Consolas', 'Courier New', monospace" font-size="12" font-weight="700" fill="#e6edf3" letter-spacing="1.5">SYS.ARCHITECT // EMIRHAN_ÜNAL.EXE [ 鬼: CYBER-MITOS ]</text>
+  
+  <!-- Win95 Buttons -->
+  <rect x="760" y="9" width="18" height="16" rx="2" fill="#151922" stroke="#484f58" stroke-width="0.8"/>
+  <text x="766" y="21" font-family="monospace" font-size="10" fill="#c9d1d9">_</text>
+  <rect x="784" y="9" width="18" height="16" rx="2" fill="#151922" stroke="#484f58" stroke-width="0.8"/>
+  <text x="789" y="21" font-family="monospace" font-size="10" fill="#c9d1d9">□</text>
+  <rect x="808" y="9" width="22" height="16" rx="2" fill="#ff003c" stroke="#ff2a55" stroke-width="0.8"/>
+  <text x="815" y="21" font-family="monospace" font-size="10" font-weight="700" fill="#ffffff">✕</text>
+
+  <!-- Animated Data Streams Behind Oni -->
+  <path d="M 50 180 L 320 180 L 370 200" stroke="#ff003c" stroke-width="1" fill="none" opacity="0.4" class="stream-line"/>
+  <path d="M 800 180 L 530 180 L 480 200" stroke="#ff003c" stroke-width="1" fill="none" opacity="0.4" class="stream-line"/>
+  <path d="M 425 40 L 425 90" stroke="#ff003c" stroke-width="1" fill="none" opacity="0.5" class="stream-line"/>
+
+  <!-- CYBER-ONI MASK (High-Res Vector Illustration with Anime Scanline Aesthetic) -->
+  <g transform="translate(365, 45)" class="glitch-target">
+    <!-- Horns -->
+    <path d="M 20 40 Q 5 -15 35 -35 Q 25 15 32 30" fill="#121620" class="horn-target" stroke-width="1.8"/>
+    <path d="M 100 40 Q 115 -15 85 -35 Q 95 15 88 30" fill="#121620" class="horn-target" stroke-width="1.8"/>
+    <!-- Head Base Armor -->
+    <polygon points="30,30 90,30 105,65 95,115 60,135 25,115 15,65" fill="#0d1017" stroke="#30363d" stroke-width="1.5"/>
+    <!-- Brow & Mask Crest -->
+    <path d="M 20 50 Q 60 70 100 50 L 95 62 Q 60 80 25 62 Z" fill="#ff003c" opacity="0.9"/>
+    <!-- Cyber Eye Slits (Animated Glow) -->
+    <polygon points="35,68 52,72 48,78 32,74" class="eye-target"/>
+    <polygon points="85,68 68,72 72,78 88,74" class="eye-target"/>
+    <!-- Pupils -->
+    <circle cx="42" cy="74" r="2.5" fill="#ffffff"/>
+    <circle cx="78" cy="74" r="2.5" fill="#ffffff"/>
+    <!-- Cybernetic Scanlines on Right Cheek -->
+    <line x1="72" y1="88" x2="96" y2="88" stroke="#ff003c" stroke-width="1" opacity="0.8"/>
+    <line x1="74" y1="93" x2="94" y2="93" stroke="#ff003c" stroke-width="1" opacity="0.8"/>
+    <line x1="76" y1="98" x2="90" y2="98" stroke="#ff003c" stroke-width="1" opacity="0.8"/>
+    <!-- Nose / Breathing Vent -->
+    <polygon points="56,82 64,82 68,96 52,96" fill="#161b22" stroke="#ff003c" stroke-width="1"/>
+    <!-- Oni Fangs & Mouth Grille -->
+    <rect x="36" y="104" width="48" height="14" rx="2" fill="#080a0f" stroke="#ff003c" stroke-width="1"/>
+    <polygon points="40,104 44,114 48,104" fill="#ffffff"/>
+    <polygon points="52,104 56,111 60,104" fill="#ffffff"/>
+    <polygon points="60,104 64,111 68,104" fill="#ffffff"/>
+    <polygon points="72,104 76,114 80,104" fill="#ffffff"/>
+    <!-- Chin Plate -->
+    <polygon points="45,122 75,122 68,136 52,136" fill="#1f2430" stroke="#30363d" stroke-width="1"/>
+  </g>
+
+  <!-- Typography: EMIRHAN ÜNAL -->
+  <text x="425" y="222" text-anchor="middle" font-family="'Segoe UI', -apple-system, sans-serif" font-size="28" font-weight="900" fill="url(#text_red_grad)" letter-spacing="6" class="glitch-target">EMIRHAN ÜNAL</text>
+  
+  <!-- Japanese Kanji Subtitle -->
+  <text x="425" y="244" text-anchor="middle" font-family="'Consolas', monospace" font-size="12" font-weight="700" fill="#8b949e" letter-spacing="4">「 電脳神話 • GAME DEV SHOGUN • 建築家の将軍 」</text>
+
+  <!-- Animated Terminal Tagline -->
+  <rect x="90" y="262" width="670" height="32" rx="4" fill="#080a0f" stroke="#21262d" stroke-width="1"/>
+  <text x="110" y="283" font-family="'Consolas', monospace" font-size="13" font-weight="600" fill="#00ff66" letter-spacing="1">> ARCHITECT OF COMPLEX, REAL-TIME MULTIPLAYER WORLDS</text>
+  <rect x="620" y="271" width="9" height="15" fill="#00ff66" class="cursor-blink"/>
+
+  <!-- Footer Hardware Telemetry Bar -->
+  <rect x="3" y="322" width="844" height="35" rx="4" fill="#0a0c12" stroke="#1f2430" stroke-width="0.8"/>
+  <circle cx="28" cy="339" r="4.5" class="led-blink"/>
+  <text x="42" y="343" font-family="'Consolas', monospace" font-size="11" font-weight="700" fill="#c9d1d9" letter-spacing="1">TICK: 20Hz LOCKSTEP</text>
+  
+  <text x="250" y="343" font-family="'Consolas', monospace" font-size="11" fill="#8b949e">MEM: 64MB HEAP</text>
+  <text x="420" y="343" font-family="'Consolas', monospace" font-size="11" fill="#8b949e">TESTS: 373 PASSING</text>
+  <text x="615" y="343" font-family="'Consolas', monospace" font-size="11" fill="#ff4770">NETCODE: ZERO DESYNC</text>
+  <text x="795" y="343" font-family="'Consolas', monospace" font-size="11" font-weight="700" fill="#00ff66">ONLINE ●</text>
+
+  <!-- Moving CRT Scanline -->
+  <line x1="4" y1="0" x2="846" y2="0" stroke="#ff003c" stroke-width="2" opacity="0.3" style="animation: scanline 6s linear infinite;" />
+</svg>
