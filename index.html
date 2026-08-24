@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SHOGUN: ZERO DESYNC // Emirhan Ünal Arcade</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #050608;
+      color: #ffffff;
+      font-family: 'Consolas', 'Courier New', monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+    .cabinet {
+      border: 2px solid #ff003c;
+      border-radius: 8px;
+      padding: 12px;
+      background: #0d0f17;
+      box-shadow: 0 0 30px rgba(255, 0, 60, 0.3);
+      max-width: 800px;
+      width: 95%;
+      text-align: center;
+    }
+    .titlebar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #141824;
+      padding: 8px 12px;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      font-weight: bold;
+      font-size: 13px;
+      color: #e6edf3;
+      letter-spacing: 1px;
+    }
+    canvas {
+      background: #020305;
+      border: 1px solid #21262d;
+      border-radius: 4px;
+      width: 100%;
+      height: 380px;
+      display: block;
+      image-rendering: pixelated;
+    }
+    .hud {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 4px 4px 4px;
+      font-size: 12px;
+      color: #8b949e;
+    }
+    .hud span { color: #00ff66; font-weight: bold; }
+    .hud .red { color: #ff003c; }
+    .instructions {
+      margin-top: 8px;
+      font-size: 11px;
+      color: #8b949e;
+    }
+    .btn {
+      background: #ff003c;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      font-family: monospace;
+      font-weight: bold;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .btn:hover { background: #ff2a55; }
+  </style>
+</head>
+<body>
+
+<div class="cabinet">
+  <div class="titlebar">
+    <span>⛩️ SHOGUN: ZERO DESYNC // 20Hz ARCADE</span>
+    <span style="color: #ff003c;">[ ARCHITECT: EMIRHAN ÜNAL ]</span>
+  </div>
+
+  <canvas id="gameCanvas" width="800" height="400"></canvas>
+
+  <div class="hud">
+    <div>SCORE: <span id="scoreVal">0</span> PTS</div>
+    <div>TICK: <span>20Hz LOCKSTEP</span></div>
+    <div>LATENCY: <span>&lt;6ms</span></div>
+    <div>STATUS: <span class="red" id="statusVal">ONLINE ●</span></div>
+  </div>
+
+  <div class="instructions">
+    [ SPACEBAR / TAP ] JUMP & SLASH BUGS | [ ARROWS / A-D ] MOVE | DEFEAT PACKET LATENCY!
+  </div>
+</div>
+
+<script>
+  const canvas = document.getElementById('gameCanvas');
+  const ctx = canvas.getContext('2d');
+  const scoreVal = document.getElementById('scoreVal');
+
+  let score = 0;
+  let gameOver = false;
+  let frame = 0;
+
+  const player = {
+    x: 100,
+    y: 300,
+    w: 24,
+    h: 36,
+    vy: 0,
+    isSlashing: false,
+    slashTimer: 0,
+    isGrounded: true
+  };
+
+  const bugs = [];
+
+  function spawnBug() {
+    bugs.push({
+      x: 820,
+      y: 310,
+      w: 26,
+      h: 26,
+      speed: 3.5 + Math.random() * 2.5
+    });
+  }
+
+  function playBeep(freq = 440, type = 'square', dur = 0.08) {
+    try {
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = type;
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + dur);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + dur);
+    } catch(e) {}
+  }
+
+  function handleAction() {
+    if (gameOver) {
+      score = 0;
+      bugs.length = 0;
+      player.y = 300;
+      player.vy = 0;
+      gameOver = false;
+      return;
+    }
+    if (player.isGrounded) {
+      player.vy = -12;
+      player.isGrounded = false;
+      player.isSlashing = true;
+      player.slashTimer = 18;
+      playBeep(620, 'square', 0.1);
+    } else if (!player.isSlashing) {
+      player.isSlashing = true;
+      player.slashTimer = 18;
+      playBeep(880, 'sawtooth', 0.08);
+    }
+  }
+
+  window.addEventListener('keydown', e => {
+    if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') {
+      handleAction();
+    }
+  });
+
+  canvas.addEventListener('touchstart', e => {
+    e.preventDefault();
+    handleAction();
+  });
+  canvas.addEventListener('click', handleAction);
+
+  function update() {
+    frame++;
+
+    if (!gameOver) {
+      // Gravity
+      player.vy += 0.65;
+      player.y += player.vy;
+
+      if (player.y >= 300) {
+        player.y = 300;
+        player.vy = 0;
+        player.isGrounded = true;
+      }
+
+      if (player.slashTimer > 0) {
+        player.slashTimer--;
+        if (player.slashTimer === 0) player.isSlashing = false;
+      }
+
+      // Spawning
+      if (frame % 70 === 0) {
+        spawnBug();
+      }
+
+      // Update bugs
+      for (let i = bugs.length - 1; i >= 0; i--) {
+        const b = bugs[i];
+        b.x -= b.speed;
+
+        // Collision Check with Samurai
+        const hit = (player.x < b.x + b.w && player.x + player.w + (player.isSlashing ? 40 : 0) > b.x &&
+                     player.y < b.y + b.h && player.y + player.h > b.y);
+
+        if (hit) {
+          if (player.isSlashing) {
+            // Slashed bug!
+            bugs.splice(i, 1);
+            score += 100;
+            scoreVal.textContent = score;
+            playBeep(1200, 'sine', 0.08);
+          } else {
+            // Player hit
+            gameOver = true;
+            playBeep(150, 'sawtooth', 0.3);
+          }
+        } else if (b.x < -40) {
+          bugs.splice(i, 1);
+          score += 20;
+          scoreVal.textContent = score;
+        }
+      }
+    }
+
+    draw();
+    requestAnimationFrame(update);
+  }
+
+  function draw() {
+    // CRT Grid Clear
+    ctx.fillStyle = '#05070c';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Floor Line
+    ctx.strokeStyle = '#21262d';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(0, 336);
+    ctx.lineTo(canvas.width, 336);
+    ctx.stroke();
+
+    // Background Neon Grid
+    ctx.strokeStyle = '#0e121c';
+    ctx.lineWidth = 1;
+    for (let x = 0; x < canvas.width; x += 40) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, 336);
+      ctx.stroke();
+    }
+
+    // Draw 1-Bit Pixel Samurai
+    ctx.fillStyle = '#e6edf3';
+    ctx.fillRect(player.x, player.y, player.w, player.h);
+    // Red Armor Accent
+    ctx.fillStyle = '#ff003c';
+    ctx.fillRect(player.x, player.y + 10, player.w, 4);
+    // Horns
+    ctx.beginPath();
+    ctx.moveTo(player.x + 4, player.y);
+    ctx.lineTo(player.x - 2, player.y - 8);
+    ctx.lineTo(player.x + 8, player.y);
+    ctx.fill();
+
+    // Katana Slash Arc
+    if (player.isSlashing) {
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(player.x + player.w + 10, player.y + 15, 30, -0.6, 1.2);
+      ctx.stroke();
+      ctx.strokeStyle = '#ff003c';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(player.x + player.w + 12, player.y + 15, 34, -0.6, 1.2);
+      ctx.stroke();
+    }
+
+    // Draw Bugs
+    for (const b of bugs) {
+      ctx.fillStyle = '#141824';
+      ctx.strokeStyle = '#ff003c';
+      ctx.lineWidth = 2;
+      ctx.fillRect(b.x, b.y, b.w, b.h);
+      ctx.strokeRect(b.x, b.y, b.w, b.h);
+
+      // Core
+      ctx.fillStyle = '#ff003c';
+      ctx.beginPath();
+      ctx.arc(b.x + b.w/2, b.y + b.h/2, 4, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // CRT Scanlines
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+    for (let y = 0; y < canvas.height; y += 4) {
+      ctx.fillRect(0, y, canvas.width, 1.5);
+    }
+
+    // Game Over Overlay
+    if (gameOver) {
+      ctx.fillStyle = 'rgba(5, 7, 12, 0.85)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#ff003c';
+      ctx.font = '24px Consolas';
+      ctx.textAlign = 'center';
+      ctx.fillText('PACKET DESYNC // GAME OVER', canvas.width / 2, 170);
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '14px Consolas';
+      ctx.fillText('FINAL SCORE: ' + score + ' PTS', canvas.width / 2, 205);
+      ctx.fillStyle = '#00ff66';
+      ctx.fillText('[ PRESS SPACE OR CLICK TO RESTART ]', canvas.width / 2, 240);
+    }
+  }
+
+  update();
+</script>
+
+</body>
+</html>
