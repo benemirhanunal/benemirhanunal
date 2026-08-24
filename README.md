@@ -55,6 +55,10 @@
 <!-- ANIMATED ARCADE CABINET -->
 <div align="center">
   <img src="assets/animated_arcade_cabinet.svg" alt="1-Bit Arcade Cabinet Mini-Game" width="100%">
+  <br><br>
+  <a href="https://benemirhanunal.github.io/benemirhanunal/" target="_blank">
+    <img src="https://img.shields.io/badge/🕹️_LAUNCH_BROWSER_ARCADE-PLAY_NOW-ff003c?style=for-the-badge&logo=retroarch&logoColor=white&color=ff003c" alt="Launch Web Arcade"/>
+  </a>
 </div>
 
 <br>
