@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SHOGUN: ZERO DESYNC // Emirhan Ünal Arcade</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>SHOGUN: ZERO DESYNC // Katana Reflex Slasher</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
     body {
       background: #050608;
       color: #ffffff;
@@ -16,15 +16,16 @@
       justify-content: center;
       min-height: 100vh;
       overflow: hidden;
+      touch-action: manipulation;
     }
     .cabinet {
       border: 2px solid #ff003c;
       border-radius: 8px;
       padding: 12px;
       background: #0d0f17;
-      box-shadow: 0 0 30px rgba(255, 0, 60, 0.3);
-      max-width: 800px;
-      width: 95%;
+      box-shadow: 0 0 40px rgba(255, 0, 60, 0.35);
+      max-width: 820px;
+      width: 96%;
       text-align: center;
     }
     .titlebar {
@@ -32,18 +33,23 @@
       justify-content: space-between;
       align-items: center;
       background: #141824;
-      padding: 8px 12px;
+      padding: 8px 14px;
       border-radius: 4px;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       font-weight: bold;
       font-size: 13px;
       color: #e6edf3;
       letter-spacing: 1px;
     }
+    .canvas-container {
+      position: relative;
+      width: 100%;
+      border-radius: 4px;
+      overflow: hidden;
+    }
     canvas {
       background: #020305;
       border: 1px solid #21262d;
-      border-radius: 4px;
       width: 100%;
       height: 380px;
       display: block;
@@ -52,186 +58,400 @@
     .hud {
       display: flex;
       justify-content: space-between;
-      padding: 10px 4px 4px 4px;
+      align-items: center;
+      padding: 8px 6px 4px 6px;
       font-size: 12px;
       color: #8b949e;
     }
     .hud span { color: #00ff66; font-weight: bold; }
     .hud .red { color: #ff003c; }
-    .instructions {
+    .touch-controls {
+      display: flex;
+      gap: 10px;
       margin-top: 8px;
-      font-size: 11px;
-      color: #8b949e;
     }
-    .btn {
-      background: #ff003c;
+    .touch-btn {
+      flex: 1;
+      background: #121622;
+      border: 1px solid #ff003c;
       color: #fff;
-      border: none;
-      padding: 8px 16px;
-      font-family: monospace;
+      padding: 12px 0;
+      font-family: 'Consolas', monospace;
+      font-size: 14px;
       font-weight: bold;
       border-radius: 4px;
       cursor: pointer;
-      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background 0.1s;
     }
-    .btn:hover { background: #ff2a55; }
+    .touch-btn:active {
+      background: #ff003c;
+      color: #fff;
+    }
+    .instructions {
+      margin-top: 6px;
+      font-size: 11px;
+      color: #8b949e;
+      letter-spacing: 0.5px;
+    }
   </style>
 </head>
 <body>
 
 <div class="cabinet">
   <div class="titlebar">
-    <span>⛩️ SHOGUN: ZERO DESYNC // 20Hz ARCADE</span>
+    <span>⛩️ SHOGUN: REFLEX SLASHER // 20Hz LOCKSTEP</span>
     <span style="color: #ff003c;">[ ARCHITECT: EMIRHAN ÜNAL ]</span>
   </div>
 
-  <canvas id="gameCanvas" width="800" height="400"></canvas>
+  <div class="canvas-container">
+    <canvas id="gameCanvas" width="800" height="400"></canvas>
+  </div>
 
   <div class="hud">
     <div>SCORE: <span id="scoreVal">0</span> PTS</div>
-    <div>TICK: <span>20Hz LOCKSTEP</span></div>
-    <div>LATENCY: <span>&lt;6ms</span></div>
-    <div>STATUS: <span class="red" id="statusVal">ONLINE ●</span></div>
+    <div>COMBO: <span id="comboVal" class="red">0x</span></div>
+    <div>REACTION: <span id="reactionVal">-- ms</span></div>
+    <div>BEST: <span id="bestVal">0</span> PTS</div>
+  </div>
+
+  <!-- Touch / On-screen Click Buttons -->
+  <div class="touch-controls">
+    <button class="touch-btn" id="btnLeft">◀ SLASH LEFT [A / ←]</button>
+    <button class="touch-btn" id="btnRight">SLASH RIGHT [D / →] ▶</button>
   </div>
 
   <div class="instructions">
-    [ SPACEBAR / TAP ] JUMP & SLASH BUGS | [ ARROWS / A-D ] MOVE | DEFEAT PACKET LATENCY!
+    [ ← / A ] SLASH LEFT &nbsp;|&nbsp; [ → / D ] SLASH RIGHT &nbsp;|&nbsp; TIME YOUR KATANA SLICE AT THE STRIKE ZONE!
   </div>
 </div>
 
 <script>
   const canvas = document.getElementById('gameCanvas');
   const ctx = canvas.getContext('2d');
+
   const scoreVal = document.getElementById('scoreVal');
+  const comboVal = document.getElementById('comboVal');
+  const reactionVal = document.getElementById('reactionVal');
+  const bestVal = document.getElementById('bestVal');
 
+  let bestScore = parseInt(localStorage.getItem('shogun_best_score') || '0', 10);
+  bestVal.textContent = bestScore;
+
+  // Game State
   let score = 0;
+  let combo = 0;
+  let maxCombo = 0;
   let gameOver = false;
+  let gameStarted = false;
   let frame = 0;
+  let shakeTimer = 0;
 
-  const player = {
-    x: 100,
-    y: 300,
-    w: 24,
-    h: 36,
-    vy: 0,
-    isSlashing: false,
+  // Center Samurai
+  const samurai = {
+    x: 400,
+    y: 280,
+    facing: 1, // -1 Left, 1 Right
     slashTimer: 0,
-    isGrounded: true
+    slashDir: 0,
+    stanceTimer: 0
   };
 
-  const bugs = [];
+  // Target Kill Zones
+  const STRIKE_DIST_MIN = 35;
+  const STRIKE_DIST_MAX = 130;
+  const PERFECT_DIST_MIN = 55;
+  const PERFECT_DIST_MAX = 100;
 
-  function spawnBug() {
-    bugs.push({
-      x: 820,
-      y: 310,
-      w: 26,
-      h: 26,
-      speed: 3.5 + Math.random() * 2.5
-    });
-  }
+  // Entities & Particles
+  const targets = [];
+  const particles = [];
+  const slashArcs = [];
+  const floatTexts = [];
 
-  function playBeep(freq = 440, type = 'square', dur = 0.08) {
+  // Web Audio Synth
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+  function playTone(freq, type = 'sine', duration = 0.08, gainVal = 0.12) {
     try {
-      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
       osc.type = type;
-      osc.frequency.value = freq;
-      gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + dur);
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      gain.gain.setValueAtTime(gainVal, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
       osc.connect(gain);
       gain.connect(audioCtx.destination);
       osc.start();
-      osc.stop(audioCtx.currentTime + dur);
+      osc.stop(audioCtx.currentTime + duration);
     } catch(e) {}
   }
 
-  function handleAction() {
-    if (gameOver) {
-      score = 0;
-      bugs.length = 0;
-      player.y = 300;
-      player.vy = 0;
-      gameOver = false;
-      return;
-    }
-    if (player.isGrounded) {
-      player.vy = -12;
-      player.isGrounded = false;
-      player.isSlashing = true;
-      player.slashTimer = 18;
-      playBeep(620, 'square', 0.1);
-    } else if (!player.isSlashing) {
-      player.isSlashing = true;
-      player.slashTimer = 18;
-      playBeep(880, 'sawtooth', 0.08);
+  function playSlashSound(isCritical = false) {
+    if (isCritical) {
+      playTone(1100, 'sawtooth', 0.12, 0.18);
+      setTimeout(() => playTone(1450, 'square', 0.09, 0.15), 35);
+    } else {
+      playTone(850, 'sawtooth', 0.09, 0.14);
+      setTimeout(() => playTone(600, 'sine', 0.08, 0.1), 30);
     }
   }
 
+  function playMissSound() {
+    playTone(180, 'sawtooth', 0.25, 0.2);
+    setTimeout(() => playTone(130, 'square', 0.35, 0.2), 60);
+  }
+
+  function playWhoosh() {
+    playTone(320, 'sine', 0.06, 0.08);
+  }
+
+  // Spawning Enemies (from Left and Right)
+  function spawnTarget() {
+    const side = Math.random() < 0.5 ? -1 : 1; // -1 Left, 1 Right
+    const startX = side === -1 ? -30 : 830;
+    const baseSpeed = 4.8 + Math.min(score / 500, 6.5);
+    const speed = baseSpeed * (side === -1 ? 1 : -1);
+
+    const types = ['DESYNC_BUG', 'PACKET_LOSS', 'MEMORY_LEAK'];
+    const type = types[Math.floor(Math.random() * types.length)];
+
+    targets.push({
+      x: startX,
+      y: 280,
+      side: side,
+      speed: speed,
+      type: type,
+      spawnTime: performance.now(),
+      w: 24,
+      h: 24,
+      slashed: false
+    });
+  }
+
+  function createParticles(x, y, color = '#ff003c', count = 14) {
+    for (let i = 0; i < count; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 2.5 + Math.random() * 5.5;
+      particles.push({
+        x: x,
+        y: y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed - 1.5,
+        life: 22 + Math.random() * 12,
+        color: Math.random() < 0.4 ? '#ffffff' : color,
+        isBit: Math.random() < 0.5,
+        char: Math.random() < 0.5 ? '0' : '1'
+      });
+    }
+  }
+
+  function addFloatText(text, x, y, color = '#00ff66') {
+    floatTexts.push({
+      text: text,
+      x: x,
+      y: y,
+      vy: -1.8,
+      life: 35,
+      color: color
+    });
+  }
+
+  // Execute Katana Slash in Direction (-1 Left, 1 Right)
+  function executeSlash(dir) {
+    if (gameOver) {
+      restartGame();
+      return;
+    }
+    if (!gameStarted) {
+      gameStarted = true;
+    }
+
+    samurai.facing = dir;
+    samurai.slashTimer = 10;
+    samurai.slashDir = dir;
+
+    playWhoosh();
+
+    // Slash Arc Visual
+    slashArcs.push({
+      x: samurai.x + dir * 35,
+      y: samurai.y,
+      dir: dir,
+      life: 10
+    });
+
+    // Check hit against incoming targets
+    let hitFound = false;
+
+    for (let i = 0; i < targets.length; i++) {
+      const t = targets[i];
+      if (t.slashed) continue;
+
+      const dist = Math.abs(t.x - samurai.x);
+      const correctDirection = (dir === -1 && t.x < samurai.x) || (dir === 1 && t.x > samurai.x);
+
+      if (correctDirection && dist >= STRIKE_DIST_MIN && dist <= STRIKE_DIST_MAX) {
+        // HIT!
+        hitFound = true;
+        t.slashed = true;
+
+        const reactionMs = Math.round(performance.now() - t.spawnTime);
+        reactionVal.textContent = reactionMs + ' ms';
+
+        const isPerfect = (dist >= PERFECT_DIST_MIN && dist <= PERFECT_DIST_MAX);
+        const pts = isPerfect ? 250 : 100;
+
+        combo++;
+        if (combo > maxCombo) maxCombo = combo;
+        comboVal.textContent = combo + 'x';
+
+        score += pts * Math.min(combo, 8);
+        scoreVal.textContent = score;
+
+        if (score > bestScore) {
+          bestScore = score;
+          bestVal.textContent = bestScore;
+          localStorage.setItem('shogun_best_score', bestScore.toString());
+        }
+
+        shakeTimer = isPerfect ? 8 : 4;
+        createParticles(t.x, t.y, '#ff003c', isPerfect ? 20 : 12);
+        playSlashSound(isPerfect);
+
+        if (isPerfect) {
+          addFloatText('CRITICAL 20Hz!', t.x, t.y - 20, '#00ff66');
+        } else {
+          addFloatText('SLASHED!', t.x, t.y - 20, '#ffffff');
+        }
+
+        // Remove target
+        targets.splice(i, 1);
+        break;
+      }
+    }
+
+    // If slashed with no target in range -> Whiff penalty
+    if (!hitFound) {
+      if (combo > 3) {
+        addFloatText('COMBO BREAK', samurai.x + dir * 40, samurai.y - 30, '#ff003c');
+      }
+      combo = 0;
+      comboVal.textContent = '0x';
+    }
+  }
+
+  function restartGame() {
+    score = 0;
+    combo = 0;
+    targets.length = 0;
+    particles.length = 0;
+    slashArcs.length = 0;
+    floatTexts.length = 0;
+    scoreVal.textContent = '0';
+    comboVal.textContent = '0x';
+    reactionVal.textContent = '-- ms';
+    gameOver = false;
+    gameStarted = true;
+  }
+
+  // Keyboard Event Listeners
   window.addEventListener('keydown', e => {
-    if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') {
-      handleAction();
+    if (e.code === 'ArrowLeft' || e.code === 'KeyA') {
+      e.preventDefault();
+      executeSlash(-1);
+    } else if (e.code === 'ArrowRight' || e.code === 'KeyD') {
+      e.preventDefault();
+      executeSlash(1);
+    } else if (e.code === 'Space' || e.code === 'Enter') {
+      e.preventDefault();
+      if (gameOver) {
+        restartGame();
+      } else {
+        // Slash in current facing direction
+        executeSlash(samurai.facing);
+      }
     }
   });
 
-  canvas.addEventListener('touchstart', e => {
+  // Touch / Button Listeners
+  document.getElementById('btnLeft').addEventListener('click', e => {
     e.preventDefault();
-    handleAction();
+    executeSlash(-1);
   });
-  canvas.addEventListener('click', handleAction);
+  document.getElementById('btnRight').addEventListener('click', e => {
+    e.preventDefault();
+    executeSlash(1);
+  });
 
+  // Click on Canvas Halves
+  canvas.addEventListener('click', e => {
+    const rect = canvas.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    if (clickX < rect.width / 2) {
+      executeSlash(-1);
+    } else {
+      executeSlash(1);
+    }
+  });
+
+  // Game Loop
   function update() {
     frame++;
 
-    if (!gameOver) {
-      // Gravity
-      player.vy += 0.65;
-      player.y += player.vy;
+    if (shakeTimer > 0) shakeTimer--;
 
-      if (player.y >= 300) {
-        player.y = 300;
-        player.vy = 0;
-        player.isGrounded = true;
+    if (gameStarted && !gameOver) {
+      // Dynamic Spawning interval based on score
+      const spawnInterval = Math.max(38, 75 - Math.floor(score / 350));
+      if (frame % spawnInterval === 0) {
+        spawnTarget();
       }
 
-      if (player.slashTimer > 0) {
-        player.slashTimer--;
-        if (player.slashTimer === 0) player.isSlashing = false;
-      }
+      // Update Targets
+      for (let i = targets.length - 1; i >= 0; i--) {
+        const t = targets[i];
+        t.x += t.speed;
 
-      // Spawning
-      if (frame % 70 === 0) {
-        spawnBug();
-      }
-
-      // Update bugs
-      for (let i = bugs.length - 1; i >= 0; i--) {
-        const b = bugs[i];
-        b.x -= b.speed;
-
-        // Collision Check with Samurai
-        const hit = (player.x < b.x + b.w && player.x + player.w + (player.isSlashing ? 40 : 0) > b.x &&
-                     player.y < b.y + b.h && player.y + player.h > b.y);
-
-        if (hit) {
-          if (player.isSlashing) {
-            // Slashed bug!
-            bugs.splice(i, 1);
-            score += 100;
-            scoreVal.textContent = score;
-            playBeep(1200, 'sine', 0.08);
-          } else {
-            // Player hit
-            gameOver = true;
-            playBeep(150, 'sawtooth', 0.3);
-          }
-        } else if (b.x < -40) {
-          bugs.splice(i, 1);
-          score += 20;
-          scoreVal.textContent = score;
+        // Check if target reached the center Samurai without being slashed
+        if ((t.side === -1 && t.x >= samurai.x - 20) || (t.side === 1 && t.x <= samurai.x + 20)) {
+          // HIT PLAYER -> GAME OVER!
+          gameOver = true;
+          shakeTimer = 15;
+          createParticles(samurai.x, samurai.y, '#ff003c', 30);
+          playMissSound();
+          break;
         }
       }
+    }
+
+    if (samurai.slashTimer > 0) samurai.slashTimer--;
+
+    // Update Particles
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.15; // Gravity
+      p.life--;
+      if (p.life <= 0) particles.splice(i, 1);
+    }
+
+    // Update Slash Arcs
+    for (let i = slashArcs.length - 1; i >= 0; i--) {
+      slashArcs[i].life--;
+      if (slashArcs[i].life <= 0) slashArcs.splice(i, 1);
+    }
+
+    // Update Float Texts
+    for (let i = floatTexts.length - 1; i >= 0; i--) {
+      floatTexts[i].y += floatTexts[i].vy;
+      floatTexts[i].life--;
+      if (floatTexts[i].life <= 0) floatTexts.splice(i, 1);
     }
 
     draw();
@@ -239,90 +459,220 @@
   }
 
   function draw() {
-    // CRT Grid Clear
+    ctx.save();
+
+    // Screen Shake FX
+    if (shakeTimer > 0) {
+      const dx = (Math.random() - 0.5) * shakeTimer * 1.5;
+      const dy = (Math.random() - 0.5) * shakeTimer * 1.5;
+      ctx.translate(dx, dy);
+    }
+
+    // Clear Canvas
     ctx.fillStyle = '#05070c';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Floor Line
-    ctx.strokeStyle = '#21262d';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(0, 336);
-    ctx.lineTo(canvas.width, 336);
-    ctx.stroke();
-
-    // Background Neon Grid
-    ctx.strokeStyle = '#0e121c';
+    // Floor Line & CRT Grid
+    ctx.strokeStyle = '#181d28';
     ctx.lineWidth = 1;
     for (let x = 0; x < canvas.width; x += 40) {
       ctx.beginPath();
       ctx.moveTo(x, 0);
-      ctx.lineTo(x, 336);
+      ctx.lineTo(x, 320);
       ctx.stroke();
     }
 
-    // Draw 1-Bit Pixel Samurai
-    ctx.fillStyle = '#e6edf3';
-    ctx.fillRect(player.x, player.y, player.w, player.h);
-    // Red Armor Accent
-    ctx.fillStyle = '#ff003c';
-    ctx.fillRect(player.x, player.y + 10, player.w, 4);
-    // Horns
+    ctx.strokeStyle = '#2d3345';
+    ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(player.x + 4, player.y);
-    ctx.lineTo(player.x - 2, player.y - 8);
-    ctx.lineTo(player.x + 8, player.y);
+    ctx.moveTo(0, 320);
+    ctx.lineTo(canvas.width, 320);
+    ctx.stroke();
+
+    // STRIKE ZONE INDICATORS (Left & Right)
+    // Left Strike Zone
+    ctx.fillStyle = 'rgba(255, 0, 60, 0.07)';
+    ctx.fillRect(samurai.x - STRIKE_DIST_MAX, 230, STRIKE_DIST_MAX - STRIKE_DIST_MIN, 90);
+    ctx.strokeStyle = 'rgba(255, 0, 60, 0.4)';
+    ctx.strokeRect(samurai.x - STRIKE_DIST_MAX, 230, STRIKE_DIST_MAX - STRIKE_DIST_MIN, 90);
+
+    // Right Strike Zone
+    ctx.fillRect(samurai.x + STRIKE_DIST_MIN, 230, STRIKE_DIST_MAX - STRIKE_DIST_MIN, 90);
+    ctx.strokeRect(samurai.x + STRIKE_DIST_MIN, 230, STRIKE_DIST_MAX - STRIKE_DIST_MIN, 90);
+
+    // Perfect Center Target Rings
+    ctx.strokeStyle = '#ff003c';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(samurai.x - (PERFECT_DIST_MIN + PERFECT_DIST_MAX)/2, 280, 22, 0, Math.PI * 2);
+    ctx.arc(samurai.x + (PERFECT_DIST_MIN + PERFECT_DIST_MAX)/2, 280, 22, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Draw Targets (Incoming Bugs / Latency Packets)
+    for (const t of targets) {
+      ctx.save();
+      ctx.translate(t.x, t.y);
+
+      // Threat Box
+      ctx.fillStyle = '#0f1420';
+      ctx.strokeStyle = '#ff003c';
+      ctx.lineWidth = 2;
+      ctx.fillRect(-12, -12, 24, 24);
+      ctx.strokeRect(-12, -12, 24, 24);
+
+      // Core Glowing Eye
+      ctx.fillStyle = '#ff003c';
+      ctx.beginPath();
+      ctx.arc(0, 0, 5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Bug Name Label
+      ctx.fillStyle = '#ff4770';
+      ctx.font = '9px Consolas';
+      ctx.textAlign = 'center';
+      ctx.fillText(t.type, 0, -18);
+
+      ctx.restore();
+    }
+
+    // Draw Center Samurai (Master Shogun Stance)
+    ctx.save();
+    ctx.translate(samurai.x, samurai.y);
+
+    // Robes & Armor
+    ctx.fillStyle = '#0a0d14';
+    ctx.strokeStyle = '#ff003c';
+    ctx.lineWidth = 1.5;
+    ctx.fillRect(-14, -25, 28, 50);
+    ctx.strokeRect(-14, -25, 28, 50);
+
+    // Chest Oni Crest
+    ctx.fillStyle = '#ff003c';
+    ctx.fillRect(-8, -10, 16, 6);
+
+    // Helmet & Horns
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(-10, -38, 20, 14);
+    // Horn Left
+    ctx.beginPath();
+    ctx.moveTo(-10, -38);
+    ctx.lineTo(-18, -50);
+    ctx.lineTo(-4, -38);
+    ctx.fillStyle = '#ff003c';
+    ctx.fill();
+    // Horn Right
+    ctx.beginPath();
+    ctx.moveTo(10, -38);
+    ctx.lineTo(18, -50);
+    ctx.lineTo(4, -38);
     ctx.fill();
 
-    // Katana Slash Arc
-    if (player.isSlashing) {
+    // Visor Eye
+    ctx.fillStyle = '#ff003c';
+    ctx.fillRect(samurai.facing === 1 ? 2 : -8, -32, 6, 3);
+
+    // Katana Blade (in stance or slash)
+    if (samurai.slashTimer > 0) {
+      // Slashing Pose
       ctx.strokeStyle = '#ffffff';
       ctx.lineWidth = 3;
       ctx.beginPath();
-      ctx.arc(player.x + player.w + 10, player.y + 15, 30, -0.6, 1.2);
+      ctx.moveTo(0, -5);
+      ctx.lineTo(samurai.slashDir * 55, -20);
       ctx.stroke();
+
       ctx.strokeStyle = '#ff003c';
       ctx.lineWidth = 1.5;
       ctx.beginPath();
-      ctx.arc(player.x + player.w + 12, player.y + 15, 34, -0.6, 1.2);
+      ctx.moveTo(0, -5);
+      ctx.lineTo(samurai.slashDir * 60, -20);
+      ctx.stroke();
+    } else {
+      // Sheathed Guard Stance
+      ctx.strokeStyle = '#c9d1d9';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(samurai.facing * -5, 10);
+      ctx.lineTo(samurai.facing * 20, -10);
       ctx.stroke();
     }
 
-    // Draw Bugs
-    for (const b of bugs) {
-      ctx.fillStyle = '#141824';
-      ctx.strokeStyle = '#ff003c';
-      ctx.lineWidth = 2;
-      ctx.fillRect(b.x, b.y, b.w, b.h);
-      ctx.strokeRect(b.x, b.y, b.w, b.h);
+    ctx.restore();
 
-      // Core
-      ctx.fillStyle = '#ff003c';
+    // Draw Slash Arcs
+    for (const a of slashArcs) {
+      ctx.save();
+      ctx.strokeStyle = 'rgba(255, 0, 60, ' + (a.life / 10) + ')';
+      ctx.lineWidth = 4;
       ctx.beginPath();
-      ctx.arc(b.x + b.w/2, b.y + b.h/2, 4, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.arc(a.x, a.y, 45, a.dir === 1 ? -0.8 : 2.3, a.dir === 1 ? 0.8 : 3.9);
+      ctx.stroke();
+      ctx.restore();
     }
 
-    // CRT Scanlines
+    // Draw Particles
+    for (const p of particles) {
+      ctx.fillStyle = p.color;
+      if (p.isBit) {
+        ctx.font = '10px Consolas';
+        ctx.fillText(p.char, p.x, p.y);
+      } else {
+        ctx.fillRect(p.x, p.y, 2.5, 2.5);
+      }
+    }
+
+    // Draw Floating Texts
+    for (const ft of floatTexts) {
+      ctx.fillStyle = ft.color;
+      ctx.font = 'bold 12px Consolas';
+      ctx.textAlign = 'center';
+      ctx.fillText(ft.text, ft.x, ft.y);
+    }
+
+    // CRT Scanlines Overlay
     ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
     for (let y = 0; y < canvas.height; y += 4) {
       ctx.fillRect(0, y, canvas.width, 1.5);
     }
 
+    // Start Screen
+    if (!gameStarted && !gameOver) {
+      ctx.fillStyle = 'rgba(5, 7, 12, 0.82)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 22px Consolas';
+      ctx.textAlign = 'center';
+      ctx.fillText('SHOGUN: KATANA REFLEX SLASHER', canvas.width / 2, 160);
+      
+      ctx.fillStyle = '#ff003c';
+      ctx.font = '13px Consolas';
+      ctx.fillText('SLASH INCOMING NETWORK BUGS WHEN THEY ENTER THE KILL ZONE', canvas.width / 2, 195);
+      
+      ctx.fillStyle = '#00ff66';
+      ctx.font = 'bold 14px Consolas';
+      ctx.fillText('[ PRESS A / D, ARROWS OR CLICK BUTTONS TO START ]', canvas.width / 2, 235);
+    }
+
     // Game Over Overlay
     if (gameOver) {
-      ctx.fillStyle = 'rgba(5, 7, 12, 0.85)';
+      ctx.fillStyle = 'rgba(5, 7, 12, 0.88)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
       ctx.fillStyle = '#ff003c';
-      ctx.font = '24px Consolas';
+      ctx.font = 'bold 24px Consolas';
       ctx.textAlign = 'center';
-      ctx.fillText('PACKET DESYNC // GAME OVER', canvas.width / 2, 170);
+      ctx.fillText('PACKET DESYNC // GAME OVER', canvas.width / 2, 150);
+      
       ctx.fillStyle = '#ffffff';
-      ctx.font = '14px Consolas';
-      ctx.fillText('FINAL SCORE: ' + score + ' PTS', canvas.width / 2, 205);
+      ctx.font = '15px Consolas';
+      ctx.fillText('FINAL SCORE: ' + score + ' PTS  |  MAX COMBO: ' + maxCombo + 'x', canvas.width / 2, 190);
+      
       ctx.fillStyle = '#00ff66';
-      ctx.fillText('[ PRESS SPACE OR CLICK TO RESTART ]', canvas.width / 2, 240);
+      ctx.font = 'bold 14px Consolas';
+      ctx.fillText('[ PRESS SPACE OR CLICK ANYWHERE TO RESTART ]', canvas.width / 2, 235);
     }
+
+    ctx.restore();
   }
 
   update();
