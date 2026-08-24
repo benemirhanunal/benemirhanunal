@@ -27,6 +27,7 @@
       max-width: 820px;
       width: 96%;
       text-align: center;
+      transition: box-shadow 0.3s;
     }
     .titlebar {
       display: flex;
@@ -71,6 +72,7 @@
       border-radius: 3px;
       border: 1px solid #ff003c;
       color: #ffffff;
+      transition: background 0.3s, color 0.3s;
     }
     .touch-controls {
       display: flex;
@@ -82,7 +84,7 @@
       background: #121622;
       border: 1px solid #ff003c;
       color: #fff;
-      padding: 12px 0;
+      padding: 13px 0;
       font-family: 'Consolas', monospace;
       font-size: 14px;
       font-weight: bold;
@@ -108,7 +110,7 @@
 </head>
 <body>
 
-<div class="cabinet">
+<div class="cabinet" id="cabinetBox">
   <div class="titlebar">
     <span>⛩️ SHOGUN: REFLEX SLASHER // 20Hz LOCKSTEP</span>
     <span style="color: #ff003c;">[ ARCHITECT: EMIRHAN ÜNAL ]</span>
@@ -121,24 +123,25 @@
   <div class="hud">
     <div>SCORE: <span id="scoreVal">0</span> PTS</div>
     <div>COMBO: <span id="comboVal" class="red">0x</span></div>
-    <div>STAGE: <span id="levelVal" class="level-badge">LVL 1 (WARM-UP)</span></div>
+    <div>STAGE: <span id="levelVal" class="level-badge">LVL 1 (EASY START)</span></div>
     <div>BEST: <span id="bestVal">0</span> PTS</div>
   </div>
 
-  <!-- Touch / On-screen Click Buttons -->
+  <!-- Touch / Click Buttons -->
   <div class="touch-controls">
     <button class="touch-btn" id="btnLeft">◀ SLASH LEFT [A / ←]</button>
     <button class="touch-btn" id="btnRight">SLASH RIGHT [D / →] ▶</button>
   </div>
 
   <div class="instructions">
-    [ ← / A ] SLASH LEFT &nbsp;|&nbsp; [ → / D ] SLASH RIGHT &nbsp;|&nbsp; STARTS GENTLE ➔ SPEEDS UP WITH COMBO & LEVEL!
+    [ ← / A ] SLASH LEFT &nbsp;|&nbsp; [ → / D ] SLASH RIGHT &nbsp;|&nbsp; RELAXED TIMING // RED AURA INTENSIFIES!
   </div>
 </div>
 
 <script>
   const canvas = document.getElementById('gameCanvas');
   const ctx = canvas.getContext('2d');
+  const cabinetBox = document.getElementById('cabinetBox');
 
   const scoreVal = document.getElementById('scoreVal');
   const comboVal = document.getElementById('comboVal');
@@ -164,16 +167,16 @@
   const samurai = {
     x: 400,
     y: 280,
-    facing: 1, // -1 Left, 1 Right
+    facing: 1,
     slashTimer: 0,
     slashDir: 0
   };
 
-  // Target Kill Zones (Generous on level 1, natural reflex tightening)
-  const STRIKE_DIST_MIN = 28;
-  const STRIKE_DIST_MAX = 140;
-  const PERFECT_DIST_MIN = 50;
-  const PERFECT_DIST_MAX = 105;
+  // MUCH WIDER, FORGIVING STRIKE ZONES (Super accessible & satisfying)
+  const STRIKE_DIST_MIN = 12;
+  const STRIKE_DIST_MAX = 175;
+  const PERFECT_DIST_MIN = 35;
+  const PERFECT_DIST_MAX = 135;
 
   // Entities & Particles
   const targets = [];
@@ -225,51 +228,54 @@
     playTone(320, 'sine', 0.06, 0.08);
   }
 
-  // Calculate Progressive Speed based on current Score/Level
-  // Starts at a relaxed 2.6, gradually climbs up smoothly
+  // GENTLE PROGRESSIVE SPEED SCALING (Very easy to start, climbs smoothly)
   function getEnemySpeed() {
-    if (score < 400) {
-      // Level 1: Gentle warm-up
-      return 2.5 + Math.random() * 0.4;
-    } else if (score < 1200) {
-      // Level 2: Moderate flow
-      return 3.5 + Math.random() * 0.6;
-    } else if (score < 2500) {
-      // Level 3: Fast reflexes
-      return 4.8 + Math.random() * 0.8;
-    } else if (score < 4500) {
-      // Level 4: Hyper-drive
-      return 6.0 + Math.random() * 1.0;
+    if (score < 600) {
+      // Level 1: Very gentle, easy start
+      return 1.4 + Math.random() * 0.3;
+    } else if (score < 1600) {
+      // Level 2: Comfortable flow
+      return 2.1 + Math.random() * 0.4;
+    } else if (score < 3200) {
+      // Level 3: Pleasant rhythm
+      return 2.9 + Math.random() * 0.5;
+    } else if (score < 5500) {
+      // Level 4: Focused reflex
+      return 3.8 + Math.random() * 0.6;
     } else {
-      // Level 5: Overclock Master
-      return 7.2 + Math.min((score - 4500) / 1000, 2.5);
+      // Level 5: Intense Shogun
+      return 4.8 + Math.min((score - 5500) / 2000, 1.8);
     }
   }
 
-  // Calculate Spawn Interval (Easy spacing -> dense rhythm)
+  // SPAWN INTERVALS (Lots of breathing room)
   function getSpawnInterval() {
-    if (score < 400) return 110; // ~1.8 seconds between spawns
-    if (score < 1200) return 85;  // ~1.4 seconds
-    if (score < 2500) return 65;  // ~1.0 second
-    if (score < 4500) return 50;  // ~0.8 second
-    return 38;                   // Rapid reflex pace
+    if (score < 600) return 145; // ~2.4 seconds between bugs (Very easy!)
+    if (score < 1600) return 115; // ~1.9 seconds
+    if (score < 3200) return 90;  // ~1.5 seconds
+    if (score < 5500) return 70;  // ~1.1 seconds
+    return 52;                   // Smooth reflex pace
   }
 
-  // Update Level Check
+  // Update Level & Visual Red Intensity
+  function getRedIntensity() {
+    return Math.min(score / 5000, 1.0); // 0.0 at start -> 1.0 at peak
+  }
+
   function checkLevelProgression() {
     let newLevel = 1;
-    let label = "LVL 1 (WARM-UP)";
+    let label = "LVL 1 (EASY START)";
 
-    if (score >= 4500) {
+    if (score >= 5500) {
       newLevel = 5;
-      label = "LVL 5 (OVERCLOCK ⚡)";
-    } else if (score >= 2500) {
+      label = "LVL 5 (CRIMSON OVERCLOCK ⚡)";
+    } else if (score >= 3200) {
       newLevel = 4;
-      label = "LVL 4 (HYPER-DRIVE)";
-    } else if (score >= 1200) {
+      label = "LVL 4 (BLOOD MOON)";
+    } else if (score >= 1600) {
       newLevel = 3;
       label = "LVL 3 (20Hz LOCKSTEP)";
-    } else if (score >= 400) {
+    } else if (score >= 600) {
       newLevel = 2;
       label = "LVL 2 (NETCODE FLOW)";
     }
@@ -277,17 +283,23 @@
     if (newLevel > currentLevel) {
       currentLevel = newLevel;
       levelBannerText = "STAGE UP! // " + label;
-      levelBannerTimer = 70;
+      levelBannerTimer = 75;
       playLevelUpSound();
       shakeTimer = 8;
     }
 
     levelVal.textContent = label;
+
+    // Cabinet Shadow Red Intensity
+    const intensity = getRedIntensity();
+    const shadowAlpha = 0.3 + intensity * 0.5;
+    const shadowSpread = 30 + intensity * 35;
+    cabinetBox.style.boxShadow = `0 0 ${shadowSpread}px rgba(255, 0, 60, ${shadowAlpha})`;
   }
 
   // Spawning Enemies
   function spawnTarget() {
-    const side = Math.random() < 0.5 ? -1 : 1; // -1 Left, 1 Right
+    const side = Math.random() < 0.5 ? -1 : 1;
     const startX = side === -1 ? -30 : 830;
     const speed = getEnemySpeed() * (side === -1 ? 1 : -1);
 
@@ -307,17 +319,20 @@
     });
   }
 
-  function createParticles(x, y, color = '#ff003c', count = 14) {
-    for (let i = 0; i < count; i++) {
+  function createParticles(x, y, count = 16) {
+    const intensity = getRedIntensity();
+    const totalCount = Math.floor(count * (1 + intensity * 0.8));
+
+    for (let i = 0; i < totalCount; i++) {
       const angle = Math.random() * Math.PI * 2;
-      const speed = 2.5 + Math.random() * 5.5;
+      const speed = 2.5 + Math.random() * 6.0;
       particles.push({
         x: x,
         y: y,
         vx: Math.cos(angle) * speed,
         vy: Math.sin(angle) * speed - 1.5,
-        life: 22 + Math.random() * 12,
-        color: Math.random() < 0.4 ? '#ffffff' : color,
+        life: 25 + Math.random() * 15,
+        color: Math.random() < 0.3 ? '#ffffff' : (Math.random() < 0.6 ? '#ff003c' : '#ff2a55'),
         isBit: Math.random() < 0.5,
         char: Math.random() < 0.5 ? '0' : '1'
       });
@@ -329,8 +344,8 @@
       text: text,
       x: x,
       y: y,
-      vy: -1.8,
-      life: 35,
+      vy: -1.6,
+      life: 38,
       color: color
     });
   }
@@ -346,7 +361,7 @@
     }
 
     samurai.facing = dir;
-    samurai.slashTimer = 10;
+    samurai.slashTimer = 11;
     samurai.slashDir = dir;
 
     playWhoosh();
@@ -356,10 +371,9 @@
       x: samurai.x + dir * 35,
       y: samurai.y,
       dir: dir,
-      life: 10
+      life: 11
     });
 
-    // Check hit against incoming targets
     let hitFound = false;
 
     for (let i = 0; i < targets.length; i++) {
@@ -370,7 +384,6 @@
       const correctDirection = (dir === -1 && t.x < samurai.x) || (dir === 1 && t.x > samurai.x);
 
       if (correctDirection && dist >= STRIKE_DIST_MIN && dist <= STRIKE_DIST_MAX) {
-        // HIT!
         hitFound = true;
         t.slashed = true;
 
@@ -381,7 +394,6 @@
         if (combo > maxCombo) maxCombo = combo;
         comboVal.textContent = combo + 'x';
 
-        // Multiplier bonus with combo
         score += basePts + (combo * 15);
         scoreVal.textContent = score;
 
@@ -394,13 +406,13 @@
         }
 
         shakeTimer = isPerfect ? 6 : 3;
-        createParticles(t.x, t.y, '#ff003c', isPerfect ? 20 : 12);
+        createParticles(t.x, t.y, isPerfect ? 24 : 14);
         playSlashSound(isPerfect);
 
         if (isPerfect) {
-          addFloatText('PERFECT CRITICAL!', t.x, t.y - 20, '#00ff66');
+          addFloatText('PERFECT CRITICAL! 20Hz', t.x, t.y - 22, '#00ff66');
         } else {
-          addFloatText('SLASHED!', t.x, t.y - 20, '#ffffff');
+          addFloatText('SLASHED!', t.x, t.y - 22, '#ffffff');
         }
 
         targets.splice(i, 1);
@@ -408,11 +420,9 @@
       }
     }
 
-    // Whiff penalty
-    if (!hitFound) {
-      if (combo > 3) {
-        addFloatText('COMBO BREAK', samurai.x + dir * 40, samurai.y - 30, '#ff003c');
-      }
+    // Gentle whiff handling (don't harshly break combo unless high combo)
+    if (!hitFound && combo > 4) {
+      addFloatText('COMBO RESET', samurai.x + dir * 40, samurai.y - 30, '#ff003c');
       combo = 0;
       comboVal.textContent = '0x';
     }
@@ -428,12 +438,13 @@
     floatTexts.length = 0;
     scoreVal.textContent = '0';
     comboVal.textContent = '0x';
-    levelVal.textContent = 'LVL 1 (WARM-UP)';
+    levelVal.textContent = 'LVL 1 (EASY START)';
+    cabinetBox.style.boxShadow = '0 0 40px rgba(255, 0, 60, 0.35)';
     gameOver = false;
     gameStarted = true;
   }
 
-  // Keyboard Event Listeners
+  // Keyboard Listeners
   window.addEventListener('keydown', e => {
     if (e.code === 'ArrowLeft' || e.code === 'KeyA') {
       e.preventDefault();
@@ -451,7 +462,7 @@
     }
   });
 
-  // Touch / Button Listeners
+  // Touch & Button Listeners
   document.getElementById('btnLeft').addEventListener('click', e => {
     e.preventDefault();
     executeSlash(-1);
@@ -461,7 +472,6 @@
     executeSlash(1);
   });
 
-  // Click on Canvas Halves
   canvas.addEventListener('click', e => {
     const rect = canvas.getBoundingClientRect();
     const clickX = e.clientX - rect.left;
@@ -472,7 +482,7 @@
     }
   });
 
-  // Game Loop
+  // Main Loop
   function update() {
     frame++;
 
@@ -480,22 +490,20 @@
     if (levelBannerTimer > 0) levelBannerTimer--;
 
     if (gameStarted && !gameOver) {
-      // Dynamic Spawning interval based on progression
       const interval = getSpawnInterval();
       if (frame % interval === 0) {
         spawnTarget();
       }
 
-      // Update Targets
       for (let i = targets.length - 1; i >= 0; i--) {
         const t = targets[i];
         t.x += t.speed;
 
-        // Check collision with central Samurai
-        if ((t.side === -1 && t.x >= samurai.x - 20) || (t.side === 1 && t.x <= samurai.x + 20)) {
+        // Collision with central Samurai
+        if ((t.side === -1 && t.x >= samurai.x - 14) || (t.side === 1 && t.x <= samurai.x + 14)) {
           gameOver = true;
-          shakeTimer = 15;
-          createParticles(samurai.x, samurai.y, '#ff003c', 30);
+          shakeTimer = 16;
+          createParticles(samurai.x, samurai.y, 35);
           playMissSound();
           break;
         }
@@ -504,23 +512,23 @@
 
     if (samurai.slashTimer > 0) samurai.slashTimer--;
 
-    // Update Particles
+    // Particles
     for (let i = particles.length - 1; i >= 0; i--) {
       const p = particles[i];
       p.x += p.vx;
       p.y += p.vy;
-      p.vy += 0.15;
+      p.vy += 0.14;
       p.life--;
       if (p.life <= 0) particles.splice(i, 1);
     }
 
-    // Update Slash Arcs
+    // Slash Arcs
     for (let i = slashArcs.length - 1; i >= 0; i--) {
       slashArcs[i].life--;
       if (slashArcs[i].life <= 0) slashArcs.splice(i, 1);
     }
 
-    // Update Float Texts
+    // Float Texts
     for (let i = floatTexts.length - 1; i >= 0; i--) {
       floatTexts[i].y += floatTexts[i].vy;
       floatTexts[i].life--;
@@ -534,19 +542,26 @@
   function draw() {
     ctx.save();
 
-    // Screen Shake FX
     if (shakeTimer > 0) {
       const dx = (Math.random() - 0.5) * shakeTimer * 1.5;
       const dy = (Math.random() - 0.5) * shakeTimer * 1.5;
       ctx.translate(dx, dy);
     }
 
-    // Clear Canvas
-    ctx.fillStyle = '#05070c';
+    const intensity = getRedIntensity();
+
+    // Clear Canvas with Dynamic Red Ambient Glow as score increases
+    const rBg = Math.floor(5 + intensity * 28);
+    const gBg = Math.floor(7 - intensity * 4);
+    const bBg = Math.floor(12 - intensity * 6);
+    ctx.fillStyle = `rgb(${rBg}, ${gBg}, ${bBg})`;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Floor Line & CRT Grid
-    ctx.strokeStyle = '#181d28';
+    // Dynamic Crimson Grid
+    const gridR = Math.floor(24 + intensity * 80);
+    const gridG = Math.floor(29 - intensity * 15);
+    const gridB = Math.floor(40 - intensity * 25);
+    ctx.strokeStyle = `rgb(${gridR}, ${gridG}, ${gridB})`;
     ctx.lineWidth = 1;
     for (let x = 0; x < canvas.width; x += 40) {
       ctx.beginPath();
@@ -555,28 +570,35 @@
       ctx.stroke();
     }
 
-    ctx.strokeStyle = '#2d3345';
+    ctx.strokeStyle = `rgb(${Math.floor(45 + intensity * 160)}, 45, 60)`;
     ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(0, 320);
     ctx.lineTo(canvas.width, 320);
     ctx.stroke();
 
-    // STRIKE ZONE INDICATORS (Left & Right)
-    ctx.fillStyle = 'rgba(255, 0, 60, 0.07)';
-    ctx.fillRect(samurai.x - STRIKE_DIST_MAX, 230, STRIKE_DIST_MAX - STRIKE_DIST_MIN, 90);
-    ctx.strokeStyle = 'rgba(255, 0, 60, 0.35)';
-    ctx.strokeRect(samurai.x - STRIKE_DIST_MAX, 230, STRIKE_DIST_MAX - STRIKE_DIST_MIN, 90);
+    // DYNAMIC RED INTENSITY STRIKE ZONES
+    const strikeAlpha = 0.08 + intensity * 0.22;
+    const borderAlpha = 0.35 + intensity * 0.45;
 
-    ctx.fillRect(samurai.x + STRIKE_DIST_MIN, 230, STRIKE_DIST_MAX - STRIKE_DIST_MIN, 90);
-    ctx.strokeRect(samurai.x + STRIKE_DIST_MIN, 230, STRIKE_DIST_MAX - STRIKE_DIST_MIN, 90);
+    // Left Strike Zone
+    ctx.fillStyle = `rgba(255, 0, 60, ${strikeAlpha})`;
+    ctx.fillRect(samurai.x - STRIKE_DIST_MAX, 220, STRIKE_DIST_MAX - STRIKE_DIST_MIN, 100);
+    ctx.strokeStyle = `rgba(255, 0, 60, ${borderAlpha})`;
+    ctx.lineWidth = 1 + intensity * 1.5;
+    ctx.strokeRect(samurai.x - STRIKE_DIST_MAX, 220, STRIKE_DIST_MAX - STRIKE_DIST_MIN, 100);
 
-    // Perfect Center Rings
+    // Right Strike Zone
+    ctx.fillRect(samurai.x + STRIKE_DIST_MIN, 220, STRIKE_DIST_MAX - STRIKE_DIST_MIN, 100);
+    ctx.strokeRect(samurai.x + STRIKE_DIST_MIN, 220, STRIKE_DIST_MAX - STRIKE_DIST_MIN, 100);
+
+    // Perfect Center Target Rings (Pulsing with red energy)
+    const ringRadius = 24 + (Math.sin(frame * 0.1) * (2 + intensity * 4));
     ctx.strokeStyle = '#ff003c';
-    ctx.lineWidth = 1.5;
+    ctx.lineWidth = 1.5 + intensity * 1.5;
     ctx.beginPath();
-    ctx.arc(samurai.x - (PERFECT_DIST_MIN + PERFECT_DIST_MAX)/2, 280, 22, 0, Math.PI * 2);
-    ctx.arc(samurai.x + (PERFECT_DIST_MIN + PERFECT_DIST_MAX)/2, 280, 22, 0, Math.PI * 2);
+    ctx.arc(samurai.x - (PERFECT_DIST_MIN + PERFECT_DIST_MAX)/2, 280, ringRadius, 0, Math.PI * 2);
+    ctx.arc(samurai.x + (PERFECT_DIST_MIN + PERFECT_DIST_MAX)/2, 280, ringRadius, 0, Math.PI * 2);
     ctx.stroke();
 
     // Draw Targets
@@ -586,17 +608,18 @@
 
       ctx.fillStyle = '#0f1420';
       ctx.strokeStyle = '#ff003c';
-      ctx.lineWidth = 2;
-      ctx.fillRect(-12, -12, 24, 24);
-      ctx.strokeRect(-12, -12, 24, 24);
+      ctx.lineWidth = 2 + intensity * 0.8;
+      ctx.fillRect(-13, -13, 26, 26);
+      ctx.strokeRect(-13, -13, 26, 26);
 
+      // Core Glowing Eye
       ctx.fillStyle = '#ff003c';
       ctx.beginPath();
-      ctx.arc(0, 0, 5, 0, Math.PI * 2);
+      ctx.arc(0, 0, 5 + intensity * 2, 0, Math.PI * 2);
       ctx.fill();
 
       ctx.fillStyle = '#ff4770';
-      ctx.font = '9px Consolas';
+      ctx.font = 'bold 9.5px Consolas';
       ctx.textAlign = 'center';
       ctx.fillText(t.type, 0, -18);
 
@@ -613,39 +636,42 @@
     ctx.fillRect(-14, -25, 28, 50);
     ctx.strokeRect(-14, -25, 28, 50);
 
+    // Chest Oni Crest (Glows brighter with red intensity)
     ctx.fillStyle = '#ff003c';
-    ctx.fillRect(-8, -10, 16, 6);
+    ctx.fillRect(-8, -10, 16, 6 + intensity * 2);
 
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(-10, -38, 20, 14);
     ctx.beginPath();
     ctx.moveTo(-10, -38);
-    ctx.lineTo(-18, -50);
+    ctx.lineTo(-18 - intensity * 4, -50 - intensity * 6);
     ctx.lineTo(-4, -38);
     ctx.fillStyle = '#ff003c';
     ctx.fill();
     ctx.beginPath();
     ctx.moveTo(10, -38);
-    ctx.lineTo(18, -50);
+    ctx.lineTo(18 + intensity * 4, -50 - intensity * 6);
     ctx.lineTo(4, -38);
     ctx.fill();
 
     ctx.fillStyle = '#ff003c';
     ctx.fillRect(samurai.facing === 1 ? 2 : -8, -32, 6, 3);
 
+    // Katana Blade
     if (samurai.slashTimer > 0) {
+      const bladeLen = 60 + intensity * 20;
       ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 3;
+      ctx.lineWidth = 3 + intensity * 1.5;
       ctx.beginPath();
       ctx.moveTo(0, -5);
-      ctx.lineTo(samurai.slashDir * 55, -20);
+      ctx.lineTo(samurai.slashDir * bladeLen, -20);
       ctx.stroke();
 
       ctx.strokeStyle = '#ff003c';
-      ctx.lineWidth = 1.5;
+      ctx.lineWidth = 2 + intensity * 2;
       ctx.beginPath();
       ctx.moveTo(0, -5);
-      ctx.lineTo(samurai.slashDir * 60, -20);
+      ctx.lineTo(samurai.slashDir * (bladeLen + 6), -20);
       ctx.stroke();
     } else {
       ctx.strokeStyle = '#c9d1d9';
@@ -658,13 +684,14 @@
 
     ctx.restore();
 
-    // Draw Slash Arcs
+    // Draw Slash Arcs (Massive fiery crimson arcs as intensity climbs)
     for (const a of slashArcs) {
       ctx.save();
-      ctx.strokeStyle = 'rgba(255, 0, 60, ' + (a.life / 10) + ')';
-      ctx.lineWidth = 4;
+      const arcAlpha = (a.life / 11) * (0.6 + intensity * 0.4);
+      ctx.strokeStyle = `rgba(255, 0, 60, ${arcAlpha})`;
+      ctx.lineWidth = 4 + intensity * 4;
       ctx.beginPath();
-      ctx.arc(a.x, a.y, 45, a.dir === 1 ? -0.8 : 2.3, a.dir === 1 ? 0.8 : 3.9);
+      ctx.arc(a.x, a.y, 48 + intensity * 12, a.dir === 1 ? -0.8 : 2.3, a.dir === 1 ? 0.8 : 3.9);
       ctx.stroke();
       ctx.restore();
     }
@@ -676,24 +703,33 @@
         ctx.font = '10px Consolas';
         ctx.fillText(p.char, p.x, p.y);
       } else {
-        ctx.fillRect(p.x, p.y, 2.5, 2.5);
+        ctx.fillRect(p.x, p.y, 2.5 + intensity * 1.5, 2.5 + intensity * 1.5);
       }
     }
 
-    // Draw Floating Texts
+    // Floating Texts
     for (const ft of floatTexts) {
       ctx.fillStyle = ft.color;
-      ctx.font = 'bold 12px Consolas';
+      ctx.font = 'bold 12.5px Consolas';
       ctx.textAlign = 'center';
       ctx.fillText(ft.text, ft.x, ft.y);
     }
 
+    // Dynamic Crimson Screen Edge Vignette as difficulty increases
+    if (intensity > 0.05) {
+      const grad = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 180, canvas.width/2, canvas.height/2, 420);
+      grad.addColorStop(0, 'rgba(255, 0, 60, 0)');
+      grad.addColorStop(1, `rgba(255, 0, 60, ${intensity * 0.35})`);
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
     // Level Up Banner Overlay
     if (levelBannerTimer > 0) {
-      ctx.fillStyle = 'rgba(255, 0, 60, 0.18)';
+      ctx.fillStyle = 'rgba(255, 0, 60, 0.22)';
       ctx.fillRect(0, 130, canvas.width, 50);
       ctx.strokeStyle = '#ff003c';
-      ctx.lineWidth = 1;
+      ctx.lineWidth = 1.5;
       ctx.strokeRect(0, 130, canvas.width, 50);
       
       ctx.fillStyle = '#ffffff';
@@ -702,7 +738,7 @@
       ctx.fillText(levelBannerText, canvas.width / 2, 162);
     }
 
-    // CRT Scanlines Overlay
+    // CRT Scanlines
     ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
     for (let y = 0; y < canvas.height; y += 4) {
       ctx.fillRect(0, y, canvas.width, 1.5);
@@ -715,18 +751,18 @@
       ctx.fillStyle = '#ffffff';
       ctx.font = 'bold 22px Consolas';
       ctx.textAlign = 'center';
-      ctx.fillText('SHOGUN: KATANA REFLEX SLASHER', canvas.width / 2, 160);
+      ctx.fillText('SHOGUN: KATANA REFLEX SLASHER', canvas.width / 2, 155);
       
       ctx.fillStyle = '#ff003c';
       ctx.font = '13px Consolas';
-      ctx.fillText('PROGRESSIVE DIFFICULTY: STARTS GENTLE ➔ SPEEDS UP OVER TIME', canvas.width / 2, 195);
+      ctx.fillText('EASY START ➔ RED GLOW & SPEED INTENSIFIES OVER TIME', canvas.width / 2, 190);
       
       ctx.fillStyle = '#00ff66';
       ctx.font = 'bold 14px Consolas';
       ctx.fillText('[ PRESS A / D, ARROWS OR CLICK BUTTONS TO START ]', canvas.width / 2, 235);
     }
 
-    // Game Over Overlay
+    // Game Over Screen
     if (gameOver) {
       ctx.fillStyle = 'rgba(5, 7, 12, 0.88)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
