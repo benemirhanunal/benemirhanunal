@@ -1,0 +1,96 @@
+<svg width="850" height="360" viewBox="0 0 850 360" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      @keyframes pulse_node {
+        0%, 100% { fill: #00ff66; filter: drop-shadow(0 0 4px #00ff66); }
+        50% { fill: #ffffff; filter: drop-shadow(0 0 8px #ffffff); }
+      }
+      @keyframes wave_motion {
+        0%, 100% { height: 6px; y: 285px; }
+        50% { height: 18px; y: 273px; fill: #ff2a55; }
+      }
+      @keyframes trajectory_flow {
+        0% { stroke-dashoffset: 80; }
+        100% { stroke-dashoffset: 0; }
+      }
+      .node-blip { animation: pulse_node 2s infinite ease-in-out; }
+      .wave-bar-1 { animation: wave_motion 1s infinite ease-in-out; }
+      .wave-bar-2 { animation: wave_motion 1.3s infinite ease-in-out 0.2s; }
+      .wave-bar-3 { animation: wave_motion 0.9s infinite ease-in-out 0.4s; }
+      .traj-stream { stroke-dasharray: 6, 6; animation: trajectory_flow 1.5s linear infinite; }
+    </style>
+    <linearGradient id="ars_bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0d0f17"/>
+      <stop offset="100%" stop-color="#050608"/>
+    </linearGradient>
+    <pattern id="ars_crt" width="4" height="4" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="4" x2="4" y2="4" stroke="#121620" stroke-width="0.75"/>
+    </pattern>
+  </defs>
+
+  <!-- Frame -->
+  <rect x="2" y="2" width="846" height="356" rx="6" fill="url(#ars_bg)" stroke="#222530" stroke-width="1.2"/>
+  <rect x="3" y="3" width="844" height="354" fill="url(#ars_crt)" opacity="0.4"/>
+
+  <!-- Titlebar -->
+  <rect x="3" y="3" width="844" height="26" rx="5" fill="#141824" stroke="#1f2430" stroke-width="0.8"/>
+  <rect x="12" y="9" width="8" height="8" rx="1" fill="#ff003c"/>
+  <text x="28" y="20" font-family="'Consolas', monospace" font-size="11" font-weight="700" fill="#e6edf3" letter-spacing="1.5">SYS.ARSENAL // CORE_ENGINEERING_MASTERY [ 4 PILLARS ]</text>
+  <text x="790" y="20" font-family="monospace" font-size="11" fill="#8b949e">[ _ ][ □ ][ X ]</text>
+
+  <!-- QUADRANT 1: DISTRIBUTED NETCODE (Top Left) -->
+  <rect x="16" y="36" width="398" height="142" rx="4" fill="#07090e" stroke="#21262d" stroke-width="0.8"/>
+  <rect x="24" y="44" width="382" height="20" rx="3" fill="#101420"/>
+  <circle cx="34" cy="54" r="3.5" class="node-blip"/>
+  <text x="44" y="58" font-family="'Consolas', monospace" font-size="10.5" font-weight="700" fill="#ff2a55">🌐 DISTRIBUTED NETCODE &amp; REPLICATION</text>
+  
+  <text x="26" y="80" font-family="'Consolas', monospace" font-size="9.5" fill="#c9d1d9">• Host-Authoritative State Sync &amp; Lag Compensation</text>
+  <text x="26" y="98" font-family="'Consolas', monospace" font-size="9.5" fill="#c9d1d9">• Deterministic 20Hz Lockstep Simulation Loops</text>
+  <text x="26" y="116" font-family="'Consolas', monospace" font-size="9.5" fill="#c9d1d9">• Photon Fusion, Netcode (NGO) &amp; Steamworks P2P</text>
+  <text x="26" y="134" font-family="'Consolas', monospace" font-size="9.5" fill="#c9d1d9">• Zero-Desync Cross-Platform Checksum Verification</text>
+  <rect x="24" y="148" width="382" height="18" rx="2" fill="#0a0d14"/>
+  <text x="30" y="161" font-family="'Consolas', monospace" font-size="8.5" fill="#00ff66">METRIC: &lt;6ms LATENCY // GOLDEN CHECKSUMS OK</text>
+
+  <!-- QUADRANT 2: GAMEPLAY & PHYSICS (Top Right) -->
+  <rect x="436" y="36" width="398" height="142" rx="4" fill="#07090e" stroke="#21262d" stroke-width="0.8"/>
+  <rect x="444" y="44" width="382" height="20" rx="3" fill="#101420"/>
+  <circle cx="454" cy="54" r="3.5" class="node-blip"/>
+  <text x="464" y="58" font-family="'Consolas', monospace" font-size="10.5" font-weight="700" fill="#ff2a55">⚡ GAMEPLAY &amp; PHYSICS ENGINES</text>
+
+  <text x="446" y="80" font-family="'Consolas', monospace" font-size="9.5" fill="#c9d1d9">• Custom Arcade Kinematic Collision Physics</text>
+  <text x="446" y="98" font-family="'Consolas', monospace" font-size="9.5" fill="#c9d1d9">• Domain Authority Decoupled from Presentation</text>
+  <text x="446" y="116" font-family="'Consolas', monospace" font-size="9.5" fill="#c9d1d9">• Zero-Alloc Object Pooling &amp; ASMDEF Modularity</text>
+  <text x="446" y="134" font-family="'Consolas', monospace" font-size="9.5" fill="#c9d1d9">• ScriptableObject-Driven State Machine Controllers</text>
+  <rect x="444" y="148" width="382" height="18" rx="2" fill="#0a0d14"/>
+  <text x="450" y="161" font-family="'Consolas', monospace" font-size="8.5" fill="#00ff66">METRIC: ZERO RUNTIME GC ALLOC // 60+ FPS LOCK</text>
+
+  <!-- QUADRANT 3: XR, DIGITAL TWINS & AI (Bottom Left) -->
+  <rect x="16" y="188" width="398" height="142" rx="4" fill="#07090e" stroke="#21262d" stroke-width="0.8"/>
+  <rect x="24" y="196" width="382" height="20" rx="3" fill="#101420"/>
+  <circle cx="34" cy="206" r="3.5" class="node-blip"/>
+  <text x="44" y="210" font-family="'Consolas', monospace" font-size="10.5" font-weight="700" fill="#ff2a55">🧠 XR, DIGITAL TWINS &amp; GENERATIVE AI</text>
+
+  <text x="26" y="232" font-family="'Consolas', monospace" font-size="9.5" fill="#c9d1d9">• Sub-6s Voice AI: Gemini STT/LLM + ElevenLabs TTS</text>
+  <text x="26" y="250" font-family="'Consolas', monospace" font-size="9.5" fill="#c9d1d9">• Reallusion CC5 Viseme Procedural Lip-Sync</text>
+  <text x="26" y="268" font-family="'Consolas', monospace" font-size="9.5" fill="#c9d1d9">• Clinical XR Simulation Architectures (TÜSEB)</text>
+  <text x="26" y="286" font-family="'Consolas', monospace" font-size="9.5" fill="#c9d1d9">• Meta Quest 3 Spatial Computing &amp; Industrial Twins</text>
+  <rect x="24" y="300" width="382" height="18" rx="2" fill="#0a0d14"/>
+  <text x="30" y="313" font-family="'Consolas', monospace" font-size="8.5" fill="#ff4770">PIPELINE: VOICE IN &gt; GEMINI LLM &gt; TTS &gt; VISEME</text>
+
+  <!-- QUADRANT 4: OPTIMIZATION & PIPELINE (Bottom Right) -->
+  <rect x="436" y="188" width="398" height="142" rx="4" fill="#07090e" stroke="#21262d" stroke-width="0.8"/>
+  <rect x="444" y="196" width="382" height="20" rx="3" fill="#101420"/>
+  <circle cx="454" cy="206" r="3.5" class="node-blip"/>
+  <text x="464" y="210" font-family="'Consolas', monospace" font-size="10.5" font-weight="700" fill="#ff2a55">🛠️ PROFILING &amp; PRODUCTION PIPELINE</text>
+
+  <text x="446" y="232" font-family="'Consolas', monospace" font-size="9.5" fill="#c9d1d9">• ~35% Runtime Optimization via Draw-Call Batching</text>
+  <text x="446" y="250" font-family="'Consolas', monospace" font-size="9.5" fill="#c9d1d9">• Test-Driven Architecture: 373 Automated Unit Tests</text>
+  <text x="446" y="268" font-family="'Consolas', monospace" font-size="9.5" fill="#c9d1d9">• Full Mobile Matrix: Android APK/AAB &amp; iOS Deploy</text>
+  <text x="446" y="286" font-family="'Consolas', monospace" font-size="9.5" fill="#c9d1d9">• Steamworks SDK Lifecycle &amp; Custom Editor Tools</text>
+  <rect x="444" y="300" width="382" height="18" rx="2" fill="#0a0d14"/>
+  <text x="450" y="313" font-family="'Consolas', monospace" font-size="8.5" fill="#00ff66">VERIFIED: 373 PASSING TESTS // STEAM SHIPPED</text>
+
+  <!-- Bottom Hardware Bar -->
+  <rect x="3" y="335" width="844" height="22" rx="3" fill="#080a0f"/>
+  <text x="16" y="350" font-family="'Consolas', monospace" font-size="9.5" fill="#8b949e">ENGINE MATRIX: UNITY 6 • UNREAL ENGINE 5 • C# • C++ • PYTHON • BLENDER • AWS</text>
+</svg>

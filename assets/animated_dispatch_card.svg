@@ -1,0 +1,55 @@
+<svg width="850" height="160" viewBox="0 0 850 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      @keyframes blink_cur {
+        0%, 49% { opacity: 1; }
+        50%, 100% { opacity: 0; }
+      }
+      .cur-blink { animation: blink_cur 1s infinite; }
+    </style>
+    <linearGradient id="disp_bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0e1017"/>
+      <stop offset="100%" stop-color="#050609"/>
+    </linearGradient>
+    <pattern id="disp_crt" width="4" height="4" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="4" x2="4" y2="4" stroke="#121620" stroke-width="0.75"/>
+    </pattern>
+  </defs>
+
+  <!-- Frame -->
+  <rect x="2" y="2" width="846" height="156" rx="6" fill="url(#disp_bg)" stroke="#222530" stroke-width="1.2"/>
+  <rect x="3" y="3" width="844" height="154" fill="url(#disp_crt)" opacity="0.4"/>
+
+  <!-- Titlebar -->
+  <rect x="3" y="3" width="844" height="24" rx="5" fill="#141824" stroke="#1f2430" stroke-width="0.8"/>
+  <rect x="12" y="9" width="8" height="8" rx="1" fill="#ff003c"/>
+  <text x="28" y="19" font-family="'Consolas', monospace" font-size="11" font-weight="700" fill="#e6edf3" letter-spacing="1.5">SYS.DISPATCH // COMMAND_NEXUS.SH [ SECURE_CHANNELS ]</text>
+  <text x="790" y="19" font-family="monospace" font-size="11" fill="#8b949e">[ _ ][ □ ][ X ]</text>
+
+  <!-- Terminal Command -->
+  <text x="20" y="48" font-family="'Consolas', monospace" font-size="11" font-weight="700" fill="#00ff66">$ ./connect_operator.sh --target=EMIRHAN_ÜNAL --protocol=SECURE_DISPATCH</text>
+  <rect x="620" y="38" width="8" height="13" fill="#00ff66" class="cur-blink"/>
+
+  <!-- 4 Channel Links -->
+  <rect x="16" y="60" width="195" height="42" rx="4" fill="#07090e" stroke="#21262d" stroke-width="0.8"/>
+  <text x="26" y="77" font-family="'Consolas', monospace" font-size="9" fill="#ff4770">[>] LINKEDIN</text>
+  <text x="26" y="92" font-family="'Consolas', monospace" font-size="10" font-weight="700" fill="#ffffff">/in/benemirhanunal</text>
+
+  <rect x="223" y="60" width="195" height="42" rx="4" fill="#07090e" stroke="#21262d" stroke-width="0.8"/>
+  <text x="233" y="77" font-family="'Consolas', monospace" font-size="9" fill="#ff4770">[>] STEAM STORE</text>
+  <text x="233" y="92" font-family="'Consolas', monospace" font-size="10" font-weight="700" fill="#ffffff">Tater Up (Live)</text>
+
+  <rect x="430" y="60" width="195" height="42" rx="4" fill="#07090e" stroke="#21262d" stroke-width="0.8"/>
+  <text x="440" y="77" font-family="'Consolas', monospace" font-size="9" fill="#ff4770">[>] ITCH.IO</text>
+  <text x="440" y="92" font-family="'Consolas', monospace" font-size="10" font-weight="700" fill="#ffffff">/icarusogt</text>
+
+  <rect x="637" y="60" width="197" height="42" rx="4" fill="#07090e" stroke="#21262d" stroke-width="0.8"/>
+  <text x="647" y="77" font-family="'Consolas', monospace" font-size="9" fill="#ff4770">[>] DIRECT EMAIL</text>
+  <text x="647" y="92" font-family="'Consolas', monospace" font-size="9.5" font-weight="700" fill="#ffffff">emirhan_60unal@...</text>
+
+  <!-- Status Bar -->
+  <rect x="16" y="114" width="818" height="28" rx="3" fill="#090b10" stroke="#181c28" stroke-width="0.8"/>
+  <text x="28" y="132" font-family="'Consolas', monospace" font-size="10" font-weight="700" fill="#00ff66">● SYSTEM READY</text>
+  <text x="200" y="132" font-family="'Consolas', monospace" font-size="10" fill="#c9d1d9">// DISPATCH INITIATED // SHOGUNATE STANDING BY</text>
+  <text x="740" y="132" font-family="'Consolas', monospace" font-size="10" font-weight="700" fill="#ff003c">[ 2026 // LIVE ]</text>
+</svg>
