@@ -65,6 +65,13 @@
     }
     .hud span { color: #00ff66; font-weight: bold; }
     .hud .red { color: #ff003c; }
+    .hud .level-badge {
+      background: #1a1e2c;
+      padding: 2px 8px;
+      border-radius: 3px;
+      border: 1px solid #ff003c;
+      color: #ffffff;
+    }
     .touch-controls {
       display: flex;
       gap: 10px;
@@ -114,7 +121,7 @@
   <div class="hud">
     <div>SCORE: <span id="scoreVal">0</span> PTS</div>
     <div>COMBO: <span id="comboVal" class="red">0x</span></div>
-    <div>REACTION: <span id="reactionVal">-- ms</span></div>
+    <div>STAGE: <span id="levelVal" class="level-badge">LVL 1 (WARM-UP)</span></div>
     <div>BEST: <span id="bestVal">0</span> PTS</div>
   </div>
 
@@ -125,7 +132,7 @@
   </div>
 
   <div class="instructions">
-    [ ← / A ] SLASH LEFT &nbsp;|&nbsp; [ → / D ] SLASH RIGHT &nbsp;|&nbsp; TIME YOUR KATANA SLICE AT THE STRIKE ZONE!
+    [ ← / A ] SLASH LEFT &nbsp;|&nbsp; [ → / D ] SLASH RIGHT &nbsp;|&nbsp; STARTS GENTLE ➔ SPEEDS UP WITH COMBO & LEVEL!
   </div>
 </div>
 
@@ -135,7 +142,7 @@
 
   const scoreVal = document.getElementById('scoreVal');
   const comboVal = document.getElementById('comboVal');
-  const reactionVal = document.getElementById('reactionVal');
+  const levelVal = document.getElementById('levelVal');
   const bestVal = document.getElementById('bestVal');
 
   let bestScore = parseInt(localStorage.getItem('shogun_best_score') || '0', 10);
@@ -145,10 +152,13 @@
   let score = 0;
   let combo = 0;
   let maxCombo = 0;
+  let currentLevel = 1;
   let gameOver = false;
   let gameStarted = false;
   let frame = 0;
   let shakeTimer = 0;
+  let levelBannerTimer = 0;
+  let levelBannerText = "";
 
   // Center Samurai
   const samurai = {
@@ -156,15 +166,14 @@
     y: 280,
     facing: 1, // -1 Left, 1 Right
     slashTimer: 0,
-    slashDir: 0,
-    stanceTimer: 0
+    slashDir: 0
   };
 
-  // Target Kill Zones
-  const STRIKE_DIST_MIN = 35;
-  const STRIKE_DIST_MAX = 130;
-  const PERFECT_DIST_MIN = 55;
-  const PERFECT_DIST_MAX = 100;
+  // Target Kill Zones (Generous on level 1, natural reflex tightening)
+  const STRIKE_DIST_MIN = 28;
+  const STRIKE_DIST_MAX = 140;
+  const PERFECT_DIST_MIN = 50;
+  const PERFECT_DIST_MAX = 105;
 
   // Entities & Particles
   const targets = [];
@@ -201,6 +210,12 @@
     }
   }
 
+  function playLevelUpSound() {
+    playTone(520, 'square', 0.1, 0.15);
+    setTimeout(() => playTone(660, 'square', 0.1, 0.15), 80);
+    setTimeout(() => playTone(880, 'square', 0.18, 0.2), 160);
+  }
+
   function playMissSound() {
     playTone(180, 'sawtooth', 0.25, 0.2);
     setTimeout(() => playTone(130, 'square', 0.35, 0.2), 60);
@@ -210,12 +225,71 @@
     playTone(320, 'sine', 0.06, 0.08);
   }
 
-  // Spawning Enemies (from Left and Right)
+  // Calculate Progressive Speed based on current Score/Level
+  // Starts at a relaxed 2.6, gradually climbs up smoothly
+  function getEnemySpeed() {
+    if (score < 400) {
+      // Level 1: Gentle warm-up
+      return 2.5 + Math.random() * 0.4;
+    } else if (score < 1200) {
+      // Level 2: Moderate flow
+      return 3.5 + Math.random() * 0.6;
+    } else if (score < 2500) {
+      // Level 3: Fast reflexes
+      return 4.8 + Math.random() * 0.8;
+    } else if (score < 4500) {
+      // Level 4: Hyper-drive
+      return 6.0 + Math.random() * 1.0;
+    } else {
+      // Level 5: Overclock Master
+      return 7.2 + Math.min((score - 4500) / 1000, 2.5);
+    }
+  }
+
+  // Calculate Spawn Interval (Easy spacing -> dense rhythm)
+  function getSpawnInterval() {
+    if (score < 400) return 110; // ~1.8 seconds between spawns
+    if (score < 1200) return 85;  // ~1.4 seconds
+    if (score < 2500) return 65;  // ~1.0 second
+    if (score < 4500) return 50;  // ~0.8 second
+    return 38;                   // Rapid reflex pace
+  }
+
+  // Update Level Check
+  function checkLevelProgression() {
+    let newLevel = 1;
+    let label = "LVL 1 (WARM-UP)";
+
+    if (score >= 4500) {
+      newLevel = 5;
+      label = "LVL 5 (OVERCLOCK ⚡)";
+    } else if (score >= 2500) {
+      newLevel = 4;
+      label = "LVL 4 (HYPER-DRIVE)";
+    } else if (score >= 1200) {
+      newLevel = 3;
+      label = "LVL 3 (20Hz LOCKSTEP)";
+    } else if (score >= 400) {
+      newLevel = 2;
+      label = "LVL 2 (NETCODE FLOW)";
+    }
+
+    if (newLevel > currentLevel) {
+      currentLevel = newLevel;
+      levelBannerText = "STAGE UP! // " + label;
+      levelBannerTimer = 70;
+      playLevelUpSound();
+      shakeTimer = 8;
+    }
+
+    levelVal.textContent = label;
+  }
+
+  // Spawning Enemies
   function spawnTarget() {
     const side = Math.random() < 0.5 ? -1 : 1; // -1 Left, 1 Right
     const startX = side === -1 ? -30 : 830;
-    const baseSpeed = 4.8 + Math.min(score / 500, 6.5);
-    const speed = baseSpeed * (side === -1 ? 1 : -1);
+    const speed = getEnemySpeed() * (side === -1 ? 1 : -1);
 
     const types = ['DESYNC_BUG', 'PACKET_LOSS', 'MEMORY_LEAK'];
     const type = types[Math.floor(Math.random() * types.length)];
@@ -261,7 +335,7 @@
     });
   }
 
-  // Execute Katana Slash in Direction (-1 Left, 1 Right)
+  // Execute Katana Slash
   function executeSlash(dir) {
     if (gameOver) {
       restartGame();
@@ -300,18 +374,18 @@
         hitFound = true;
         t.slashed = true;
 
-        const reactionMs = Math.round(performance.now() - t.spawnTime);
-        reactionVal.textContent = reactionMs + ' ms';
-
         const isPerfect = (dist >= PERFECT_DIST_MIN && dist <= PERFECT_DIST_MAX);
-        const pts = isPerfect ? 250 : 100;
+        const basePts = isPerfect ? 200 : 100;
 
         combo++;
         if (combo > maxCombo) maxCombo = combo;
         comboVal.textContent = combo + 'x';
 
-        score += pts * Math.min(combo, 8);
+        // Multiplier bonus with combo
+        score += basePts + (combo * 15);
         scoreVal.textContent = score;
+
+        checkLevelProgression();
 
         if (score > bestScore) {
           bestScore = score;
@@ -319,23 +393,22 @@
           localStorage.setItem('shogun_best_score', bestScore.toString());
         }
 
-        shakeTimer = isPerfect ? 8 : 4;
+        shakeTimer = isPerfect ? 6 : 3;
         createParticles(t.x, t.y, '#ff003c', isPerfect ? 20 : 12);
         playSlashSound(isPerfect);
 
         if (isPerfect) {
-          addFloatText('CRITICAL 20Hz!', t.x, t.y - 20, '#00ff66');
+          addFloatText('PERFECT CRITICAL!', t.x, t.y - 20, '#00ff66');
         } else {
           addFloatText('SLASHED!', t.x, t.y - 20, '#ffffff');
         }
 
-        // Remove target
         targets.splice(i, 1);
         break;
       }
     }
 
-    // If slashed with no target in range -> Whiff penalty
+    // Whiff penalty
     if (!hitFound) {
       if (combo > 3) {
         addFloatText('COMBO BREAK', samurai.x + dir * 40, samurai.y - 30, '#ff003c');
@@ -348,13 +421,14 @@
   function restartGame() {
     score = 0;
     combo = 0;
+    currentLevel = 1;
     targets.length = 0;
     particles.length = 0;
     slashArcs.length = 0;
     floatTexts.length = 0;
     scoreVal.textContent = '0';
     comboVal.textContent = '0x';
-    reactionVal.textContent = '-- ms';
+    levelVal.textContent = 'LVL 1 (WARM-UP)';
     gameOver = false;
     gameStarted = true;
   }
@@ -372,7 +446,6 @@
       if (gameOver) {
         restartGame();
       } else {
-        // Slash in current facing direction
         executeSlash(samurai.facing);
       }
     }
@@ -404,11 +477,12 @@
     frame++;
 
     if (shakeTimer > 0) shakeTimer--;
+    if (levelBannerTimer > 0) levelBannerTimer--;
 
     if (gameStarted && !gameOver) {
-      // Dynamic Spawning interval based on score
-      const spawnInterval = Math.max(38, 75 - Math.floor(score / 350));
-      if (frame % spawnInterval === 0) {
+      // Dynamic Spawning interval based on progression
+      const interval = getSpawnInterval();
+      if (frame % interval === 0) {
         spawnTarget();
       }
 
@@ -417,9 +491,8 @@
         const t = targets[i];
         t.x += t.speed;
 
-        // Check if target reached the center Samurai without being slashed
+        // Check collision with central Samurai
         if ((t.side === -1 && t.x >= samurai.x - 20) || (t.side === 1 && t.x <= samurai.x + 20)) {
-          // HIT PLAYER -> GAME OVER!
           gameOver = true;
           shakeTimer = 15;
           createParticles(samurai.x, samurai.y, '#ff003c', 30);
@@ -436,7 +509,7 @@
       const p = particles[i];
       p.x += p.vx;
       p.y += p.vy;
-      p.vy += 0.15; // Gravity
+      p.vy += 0.15;
       p.life--;
       if (p.life <= 0) particles.splice(i, 1);
     }
@@ -490,17 +563,15 @@
     ctx.stroke();
 
     // STRIKE ZONE INDICATORS (Left & Right)
-    // Left Strike Zone
     ctx.fillStyle = 'rgba(255, 0, 60, 0.07)';
     ctx.fillRect(samurai.x - STRIKE_DIST_MAX, 230, STRIKE_DIST_MAX - STRIKE_DIST_MIN, 90);
-    ctx.strokeStyle = 'rgba(255, 0, 60, 0.4)';
+    ctx.strokeStyle = 'rgba(255, 0, 60, 0.35)';
     ctx.strokeRect(samurai.x - STRIKE_DIST_MAX, 230, STRIKE_DIST_MAX - STRIKE_DIST_MIN, 90);
 
-    // Right Strike Zone
     ctx.fillRect(samurai.x + STRIKE_DIST_MIN, 230, STRIKE_DIST_MAX - STRIKE_DIST_MIN, 90);
     ctx.strokeRect(samurai.x + STRIKE_DIST_MIN, 230, STRIKE_DIST_MAX - STRIKE_DIST_MIN, 90);
 
-    // Perfect Center Target Rings
+    // Perfect Center Rings
     ctx.strokeStyle = '#ff003c';
     ctx.lineWidth = 1.5;
     ctx.beginPath();
@@ -508,25 +579,22 @@
     ctx.arc(samurai.x + (PERFECT_DIST_MIN + PERFECT_DIST_MAX)/2, 280, 22, 0, Math.PI * 2);
     ctx.stroke();
 
-    // Draw Targets (Incoming Bugs / Latency Packets)
+    // Draw Targets
     for (const t of targets) {
       ctx.save();
       ctx.translate(t.x, t.y);
 
-      // Threat Box
       ctx.fillStyle = '#0f1420';
       ctx.strokeStyle = '#ff003c';
       ctx.lineWidth = 2;
       ctx.fillRect(-12, -12, 24, 24);
       ctx.strokeRect(-12, -12, 24, 24);
 
-      // Core Glowing Eye
       ctx.fillStyle = '#ff003c';
       ctx.beginPath();
       ctx.arc(0, 0, 5, 0, Math.PI * 2);
       ctx.fill();
 
-      // Bug Name Label
       ctx.fillStyle = '#ff4770';
       ctx.font = '9px Consolas';
       ctx.textAlign = 'center';
@@ -535,45 +603,37 @@
       ctx.restore();
     }
 
-    // Draw Center Samurai (Master Shogun Stance)
+    // Draw Center Samurai
     ctx.save();
     ctx.translate(samurai.x, samurai.y);
 
-    // Robes & Armor
     ctx.fillStyle = '#0a0d14';
     ctx.strokeStyle = '#ff003c';
     ctx.lineWidth = 1.5;
     ctx.fillRect(-14, -25, 28, 50);
     ctx.strokeRect(-14, -25, 28, 50);
 
-    // Chest Oni Crest
     ctx.fillStyle = '#ff003c';
     ctx.fillRect(-8, -10, 16, 6);
 
-    // Helmet & Horns
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(-10, -38, 20, 14);
-    // Horn Left
     ctx.beginPath();
     ctx.moveTo(-10, -38);
     ctx.lineTo(-18, -50);
     ctx.lineTo(-4, -38);
     ctx.fillStyle = '#ff003c';
     ctx.fill();
-    // Horn Right
     ctx.beginPath();
     ctx.moveTo(10, -38);
     ctx.lineTo(18, -50);
     ctx.lineTo(4, -38);
     ctx.fill();
 
-    // Visor Eye
     ctx.fillStyle = '#ff003c';
     ctx.fillRect(samurai.facing === 1 ? 2 : -8, -32, 6, 3);
 
-    // Katana Blade (in stance or slash)
     if (samurai.slashTimer > 0) {
-      // Slashing Pose
       ctx.strokeStyle = '#ffffff';
       ctx.lineWidth = 3;
       ctx.beginPath();
@@ -588,7 +648,6 @@
       ctx.lineTo(samurai.slashDir * 60, -20);
       ctx.stroke();
     } else {
-      // Sheathed Guard Stance
       ctx.strokeStyle = '#c9d1d9';
       ctx.lineWidth = 2.5;
       ctx.beginPath();
@@ -629,6 +688,20 @@
       ctx.fillText(ft.text, ft.x, ft.y);
     }
 
+    // Level Up Banner Overlay
+    if (levelBannerTimer > 0) {
+      ctx.fillStyle = 'rgba(255, 0, 60, 0.18)';
+      ctx.fillRect(0, 130, canvas.width, 50);
+      ctx.strokeStyle = '#ff003c';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(0, 130, canvas.width, 50);
+      
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 16px Consolas';
+      ctx.textAlign = 'center';
+      ctx.fillText(levelBannerText, canvas.width / 2, 162);
+    }
+
     // CRT Scanlines Overlay
     ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
     for (let y = 0; y < canvas.height; y += 4) {
@@ -646,7 +719,7 @@
       
       ctx.fillStyle = '#ff003c';
       ctx.font = '13px Consolas';
-      ctx.fillText('SLASH INCOMING NETWORK BUGS WHEN THEY ENTER THE KILL ZONE', canvas.width / 2, 195);
+      ctx.fillText('PROGRESSIVE DIFFICULTY: STARTS GENTLE ➔ SPEEDS UP OVER TIME', canvas.width / 2, 195);
       
       ctx.fillStyle = '#00ff66';
       ctx.font = 'bold 14px Consolas';
@@ -661,15 +734,19 @@
       ctx.fillStyle = '#ff003c';
       ctx.font = 'bold 24px Consolas';
       ctx.textAlign = 'center';
-      ctx.fillText('PACKET DESYNC // GAME OVER', canvas.width / 2, 150);
+      ctx.fillText('PACKET DESYNC // GAME OVER', canvas.width / 2, 140);
       
       ctx.fillStyle = '#ffffff';
       ctx.font = '15px Consolas';
-      ctx.fillText('FINAL SCORE: ' + score + ' PTS  |  MAX COMBO: ' + maxCombo + 'x', canvas.width / 2, 190);
+      ctx.fillText('FINAL SCORE: ' + score + ' PTS  |  MAX COMBO: ' + maxCombo + 'x', canvas.width / 2, 180);
       
+      ctx.fillStyle = '#8b949e';
+      ctx.font = '12px Consolas';
+      ctx.fillText('REACHED: ' + levelVal.textContent, canvas.width / 2, 205);
+
       ctx.fillStyle = '#00ff66';
       ctx.font = 'bold 14px Consolas';
-      ctx.fillText('[ PRESS SPACE OR CLICK ANYWHERE TO RESTART ]', canvas.width / 2, 235);
+      ctx.fillText('[ PRESS SPACE OR CLICK ANYWHERE TO RESTART ]', canvas.width / 2, 245);
     }
 
     ctx.restore();
